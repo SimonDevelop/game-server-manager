@@ -11,6 +11,11 @@ use Doctrine\ORM\Mapping as ORM;
 class Server
 {
     /**
+     * @var string
+     */
+    private $cipher = 'aes-128-gcm';
+
+    /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -97,12 +102,12 @@ class Server
 
     public function getPassword(): ?string
     {
-        return $this->password;
+        return openssl_decrypt($this->password, $this->cipher, getenv("PASSWORD_HASH_KEY"));
     }
 
     public function setPassword(string $password): self
     {
-        $this->password = $password;
+        $this->password = openssl_encrypt($password, $this->cipher, getenv("PASSWORD_HASH_KEY"));
 
         return $this;
     }
