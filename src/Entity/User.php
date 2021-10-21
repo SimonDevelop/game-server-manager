@@ -30,7 +30,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $roles = ["ROLE_USER"];
 
     /**
-     * @var string The hashed password
+     * @var string
      * @ORM\Column(type="string")
      */
     private $password;
@@ -82,14 +82,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see PasswordAuthenticatedUserInterface
      */
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
         return $this->password;
     }
 
-    public function setPassword(string $password): self
+    public function setPassword(?string $password): self
     {
-        $this->password = $password;
+        if (null === $password) {
+            $this->password = $this->password;
+        } else {
+            $this->password = $password;
+        }
 
         return $this;
     }
