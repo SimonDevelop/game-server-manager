@@ -40,10 +40,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     public function findAllUsers(): Query
     {
         return $this->createQueryBuilder('u')
-            ->leftjoin('u.skills', 's')
-            ->addSelect('s')
-            ->leftjoin('s.category', 'c')
-            ->addSelect('c')
             ->getQuery();
     }
 }
