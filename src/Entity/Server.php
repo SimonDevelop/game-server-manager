@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ServerRepository;
 use Doctrine\ORM\Mapping as ORM;
+use DateTimeImmutable;
 
 /**
  * @ORM\Entity(repositoryClass=ServerRepository::class)
@@ -46,6 +47,16 @@ class Server
      * @ORM\Column(type="string", length=255)
      */
     private $password;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
+
+    public function __construct()
+    {
+        $this->createdAt = new DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
@@ -124,6 +135,18 @@ class Server
                 $_ENV['IV_HASH']
             );
         }
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

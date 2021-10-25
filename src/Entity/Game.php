@@ -4,15 +4,25 @@ namespace App\Entity;
 
 use App\Repository\GameRepository;
 use Doctrine\ORM\Mapping as ORM;
+use DateTimeImmutable;
 
 /**
  * @ORM\Entity(repositoryClass=GameRepository::class)
  */
 class Game
 {
-    const TYPE = [
-        0 => "Minecraft",
-        1 => "Garry's Mod"
+    const GAME_TYPE = [
+        0 => "Screen Server",
+        1 => "Docker Server"
+    ];
+
+    const STATE_TYPE = [
+        0 => 'Off',
+        1 => 'On',
+        2 => 'Installing',
+        3 => 'Starting',
+        4 => 'Stopping',
+        5 => 'Updating'
     ];
 
     /**
@@ -33,6 +43,11 @@ class Game
     private $commandStart;
 
     /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $commandUpdate;
+
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $commandStop;
@@ -48,9 +63,19 @@ class Game
     private $gameType;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    private $stateType;
+
+    /**
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
+
+    public function __construct()
+    {
+        $this->createdAt = new DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
@@ -77,6 +102,18 @@ class Game
     public function setCommandStart(string $commandStart): self
     {
         $this->commandStart = $commandStart;
+
+        return $this;
+    }
+
+    public function getCommandUpdate(): ?string
+    {
+        return $this->commandUpdate;
+    }
+
+    public function setCommandUpdate(string $commandUpdate): self
+    {
+        $this->commandUpdate = $commandUpdate;
 
         return $this;
     }
@@ -119,7 +156,24 @@ class Game
 
     public function getGame(): string
     {
-        return self::TYPE[$this->gameType];
+        return self::GAME_TYPE[$this->gameType];
+    }
+
+    public function getStateType(): ?int
+    {
+        return $this->stateType;
+    }
+
+    public function setStateType(int $stateType): self
+    {
+        $this->stateType = $stateType;
+
+        return $this;
+    }
+
+    public function getState(): string
+    {
+        return self::STATE_TYPE[$this->stateType];
     }
 
     public function getCreatedAt(): ?\DateTimeInterface
