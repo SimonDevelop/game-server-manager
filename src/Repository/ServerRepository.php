@@ -22,7 +22,16 @@ class ServerRepository extends ServiceEntityRepository
 
     public function findAllServers(): Query
     {
-        return $this->createQueryBuilder('u')
+        return $this->createQueryBuilder('s')
             ->getQuery();
+    }
+
+    public function findById($id): ?Server
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

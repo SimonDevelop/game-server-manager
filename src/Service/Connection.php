@@ -22,4 +22,14 @@ class Connection
             return null;
         }
     }
+
+    public function sendCommand(SSHConnection $connection, string $command): bool
+    {
+        try {
+            $connection->run($command);
+            return true;
+        } catch (\Throwable $th) {
+            return false;
+        }   
+    }
 }
