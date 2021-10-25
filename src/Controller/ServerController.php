@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Server;
 use App\Form\ServerType;
 use App\Repository\ServerRepository;
-use DivineOmega\SSHConnection\SSHConnection;
+use App\Service\Connection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -100,17 +100,11 @@ class ServerController extends AbstractController
      * @Route("/{id}/check", name="server_check", methods={"GET"})
      * @return Response
      */
-    public function checkConnect(Request $request, Server $server): Response
+    public function checkConnect(Server $server, Connection $connexion): Response
     {
-        try {
-            (new SSHConnection())
-                ->to($server->getIp())
-                ->onPort($server->getPort())
-                ->as($server->getLogin())
-                ->withPassword($server->getPassword())
-                ->connect();
+        if (null !== $connexion->getConnection($server)) {
             $this->addFlash('success', 'Authentification réussi !');
-        } catch (\Throwable $th) {
+        } else {
             $this->addFlash('danger', 'Authentification échoué !');
         }
 
