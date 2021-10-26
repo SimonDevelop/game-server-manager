@@ -15,6 +15,7 @@
                 <th>Id</th>
                 <th>Username</th>
                 <th>Role</th>
+                <th>Date de création</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -30,6 +31,7 @@
                         User
                     {% endif %}
                 </td>
+                <td>{{ user.createdAt|date('d/m/Y') }}</td>
                 <td>
                     <div class="row justify-content-start">
                         <div class="col-auto">

@@ -29,6 +29,7 @@
                 <th>Adresse IP</th>
                 <th>Port</th>
                 <th>Login</th>
+                <th>Date de création</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -40,6 +41,7 @@
                 <td>{{ server.ip }}</td>
                 <td>{{ server.port }}</td>
                 <td>{{ server.login }}</td>
+                <td>{{ server.createdAt|date('d/m/Y') }}</td>
                 <td>
                     <div class="row justify-content-start">
                         <div class="col-auto">
