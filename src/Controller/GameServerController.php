@@ -6,6 +6,7 @@ use App\Entity\GameServer;
 use App\Form\GameServerType;
 use App\Message\SendCommand;
 use App\Repository\GameServerRepository;
+use App\Service\GameServerOperations;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -96,7 +97,7 @@ class GameServerController extends AbstractController
     public function gameOn(Request $request, GameServer $game): Response
     {
         if ($this->isCsrfTokenValid('on'.$game->getId(), $request->request->get('_token'))) {
-            $name    = str_replace(' ', '', $game->getName()).'_'.$game->getId();
+            $name    = GameServerOperations::getGameServerNameScreen($game);
             $path    = $game->getPath();
             $cmd     = $game->getCommandStart();
             $command = "cd $path && screen -d -m -S $name $cmd";
@@ -118,7 +119,7 @@ class GameServerController extends AbstractController
     public function gameOff(Request $request, GameServer $game): Response
     {
         if ($this->isCsrfTokenValid('off'.$game->getId(), $request->request->get('_token'))) {
-            $name    = str_replace(' ', '', $game->getName()).'_'.$game->getId();
+            $name    = GameServerOperations::getGameServerNameScreen($game);
             $cmd     = $game->getCommandStop();
             $command = "screen -S $name -X stuff \"$cmd\"";
             $this->dispatchMessage(new SendCommand(1, $command));
@@ -139,7 +140,7 @@ class GameServerController extends AbstractController
     public function gameKill(Request $request, GameServer $game): Response
     {
         if ($this->isCsrfTokenValid('kill'.$game->getId(), $request->request->get('_token'))) {
-            $name    = str_replace(' ', '', $game->getName()).'_'.$game->getId();
+            $name    = GameServerOperations::getGameServerNameScreen($game);
             $command = "screen -XS $name quit";
             $this->dispatchMessage(new SendCommand(1, $command));
 
