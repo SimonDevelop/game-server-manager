@@ -2,14 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\GameRepository;
+use App\Repository\GameServerRepository;
+use App\Entity\Server;
 use Doctrine\ORM\Mapping as ORM;
 use DateTimeImmutable;
 
 /**
- * @ORM\Entity(repositoryClass=GameRepository::class)
+ * @ORM\Entity(repositoryClass=GameServerRepository::class)
  */
-class Game
+class GameServer
 {
     const GAME_TYPE = [
         0 => "Screen Server",
@@ -43,19 +44,19 @@ class Game
     private $commandStart;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $commandUpdate;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255)
      */
     private $commandStop;
 
     /**
-     * @ORM\Column(type="string", length=5)
+     * @ORM\Column(type="string", length=255)
      */
-    private $port;
+    private $path;
 
     /**
      * @ORM\Column(type="integer")
@@ -68,12 +69,19 @@ class Game
     private $stateType;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Server", cascade={"persist"})
+     * @ORM\JoinColumn(name="id_server", referencedColumnName="id", nullable=true)
+     */
+    private $server;
+
+    /**
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
 
     public function __construct()
     {
+        $this->stateType = 0;
         $this->createdAt = new DateTimeImmutable();
     }
 
@@ -111,33 +119,33 @@ class Game
         return $this->commandUpdate;
     }
 
-    public function setCommandUpdate(string $commandUpdate): self
+    public function setCommandUpdate(?string $commandUpdate): self
     {
         $this->commandUpdate = $commandUpdate;
 
         return $this;
     }
 
-    public function getCommandStop(): ?string
+    public function getCommandStop(): string
     {
         return $this->commandStop;
     }
 
-    public function setCommandStop(?string $commandStop): self
+    public function setCommandStop(string $commandStop): self
     {
         $this->commandStop = $commandStop;
 
         return $this;
     }
 
-    public function getPort(): ?string
+    public function getPath(): string
     {
-        return $this->port;
+        return $this->path;
     }
 
-    public function setPort(string $port): self
+    public function setPath(string $path): self
     {
-        $this->port = $port;
+        $this->path = $path;
 
         return $this;
     }
@@ -174,6 +182,18 @@ class Game
     public function getState(): string
     {
         return self::STATE_TYPE[$this->stateType];
+    }
+
+    public function getServer(): ?Server
+    {
+        return $this->server;
+    }
+
+    public function setServer(?Server $server): self
+    {
+        $this->server = $server;
+
+        return $this;
     }
 
     public function getCreatedAt(): ?\DateTimeInterface
