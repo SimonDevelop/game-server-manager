@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\GameServer;
 use App\Form\GameServerType;
+use App\Message\SendCommand;
 use App\Repository\GameServerRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -82,6 +83,69 @@ class GameServerController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$game->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($game);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('game_index');
+    }
+
+    /**
+     * @Route("/{id}/on", name="game_on", methods={"POST"})
+     * @return Response
+     */
+    public function gameOn(Request $request, GameServer $game): Response
+    {
+        if ($this->isCsrfTokenValid('on'.$game->getId(), $request->request->get('_token'))) {
+            $name    = str_replace(' ', '', $game->getName()).'_'.$game->getId();
+            $path    = $game->getPath();
+            $cmd     = $game->getCommandStart();
+            $command = "cd $path && screen -d -m -S $name $cmd";
+            $this->dispatchMessage(new SendCommand(1, $command));
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $game->setStateType(1);
+            $entityManager->persist($game);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('game_index');
+    }
+
+    /**
+     * @Route("/{id}/off", name="game_off", methods={"POST"})
+     * @return Response
+     */
+    public function gameOff(Request $request, GameServer $game): Response
+    {
+        if ($this->isCsrfTokenValid('off'.$game->getId(), $request->request->get('_token'))) {
+            $name    = str_replace(' ', '', $game->getName()).'_'.$game->getId();
+            $cmd     = $game->getCommandStop();
+            $command = "screen -S $name -X stuff \"$cmd\"";
+            $this->dispatchMessage(new SendCommand(1, $command));
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $game->setStateType(0);
+            $entityManager->persist($game);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('game_index');
+    }
+
+    /**
+     * @Route("/{id}/kill", name="game_kill", methods={"POST"})
+     * @return Response
+     */
+    public function gameKill(Request $request, GameServer $game): Response
+    {
+        if ($this->isCsrfTokenValid('kill'.$game->getId(), $request->request->get('_token'))) {
+            $name    = str_replace(' ', '', $game->getName()).'_'.$game->getId();
+            $command = "screen -XS $name quit";
+            $this->dispatchMessage(new SendCommand(1, $command));
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $game->setStateType(0);
+            $entityManager->persist($game);
             $entityManager->flush();
         }
 

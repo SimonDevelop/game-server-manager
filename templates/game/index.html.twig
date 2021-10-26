@@ -30,7 +30,8 @@
                 <th>Type</th>
                 <th>Etat</th>
                 <th>Date de création</th>
-                <th>actions</th>
+                <th>Opérations</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -40,8 +41,45 @@
                 <td>{{ game.name }}</td>
                 <td>{{ game.server.name }}</td>
                 <td>{{ game.game }}</td>
-                <td>{{ game.state }}</td>
+                <td>
+                {% if game.state == 'On' %}
+                    <span class="badge rounded-pill bg-success">{{ game.state }}</span>
+                {% elseif game.state == 'Off' %}
+                    <span class="badge rounded-pill bg-danger">{{ game.state }}</span>
+                {% else %}
+                    <span class="badge rounded-pill bg-warning">{{ game.state }}</span>
+                {% endif %}
+                </td>
                 <td>{{ game.createdAt|date('d/m/Y') }}</td>
+                <td>
+                    <div class="row justify-content-start">
+                        {% if game.game == 'Screen Server' %}
+                            {% if game.state == 'On' %}
+                                <div class="col-auto">
+                                    <form method="post" action="{{ path('game_off', {'id': game.id}) }}" onsubmit="return confirm('Êtes vous sûr de vouloir éteindre ce serveur de jeu ?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('off' ~ game.id) }}">
+                                        <button class="btn btn-warning">Eteindre</button>
+                                    </form>
+                                </div>
+                                <div class="col-auto">
+                                    <form method="post" action="{{ path('game_kill', {'id': game.id}) }}" onsubmit="return confirm('Êtes vous sûr de vouloir kill ce serveur de jeu ?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('kill' ~ game.id) }}">
+                                        <button class="btn btn-danger">Killer</button>
+                                    </form>
+                                </div>
+                            {% else %}
+                                <div class="col-auto">
+                                    <form method="post" action="{{ path('game_on', {'id': game.id}) }}" onsubmit="return confirm('Êtes vous sûr de vouloir démarrer ce serveur de jeu ?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('on' ~ game.id) }}">
+                                        <button class="btn btn-success">Démarrer</button>
+                                    </form>
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            Aucune opérations disponible
+                        {% endif %}
+                    </div>
+                </td>
                 <td>
                     <div class="row justify-content-start">
                         <div class="col-auto">
