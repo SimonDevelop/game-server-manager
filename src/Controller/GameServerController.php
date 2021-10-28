@@ -94,10 +94,10 @@ class GameServerController extends AbstractController
      * @Route("/{id}/on", name="game_on", methods={"POST"})
      * @return Response
      */
-    public function gameOn(Request $request, GameServer $game): Response
+    public function gameOn(Request $request, GameServer $game, GameServerOperations $gameOperations): Response
     {
         if ($this->isCsrfTokenValid('on'.$game->getId(), $request->request->get('_token'))) {
-            $name    = GameServerOperations::getGameServerNameScreen($game);
+            $name    = $gameOperations->getGameServerNameScreen($game);
             $path    = $game->getPath();
             $cmd     = $game->getCommandStart();
             $command = "cd $path && screen -d -m -S $name $cmd";
@@ -116,10 +116,10 @@ class GameServerController extends AbstractController
      * @Route("/{id}/off", name="game_off", methods={"POST"})
      * @return Response
      */
-    public function gameOff(Request $request, GameServer $game): Response
+    public function gameOff(Request $request, GameServer $game, GameServerOperations $gameOperations): Response
     {
         if ($this->isCsrfTokenValid('off'.$game->getId(), $request->request->get('_token'))) {
-            $name    = GameServerOperations::getGameServerNameScreen($game);
+            $name    = $gameOperations->getGameServerNameScreen($game);
             $cmd     = $game->getCommandStop();
             $command = "screen -S $name -X stuff \"$cmd\"";
             $this->dispatchMessage(new SendCommand(1, $command));
@@ -137,10 +137,10 @@ class GameServerController extends AbstractController
      * @Route("/{id}/kill", name="game_kill", methods={"POST"})
      * @return Response
      */
-    public function gameKill(Request $request, GameServer $game): Response
+    public function gameKill(Request $request, GameServer $game, GameServerOperations $gameOperations): Response
     {
         if ($this->isCsrfTokenValid('kill'.$game->getId(), $request->request->get('_token'))) {
-            $name    = GameServerOperations::getGameServerNameScreen($game);
+            $name    = $gameOperations->getGameServerNameScreen($game);
             $command = "screen -XS $name quit";
             $this->dispatchMessage(new SendCommand(1, $command));
 
