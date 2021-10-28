@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use DateTimeImmutable;
+use DateTimeInterface;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -31,13 +32,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $roles = ["ROLE_USER"];
 
     /**
-     * @var string
      * @ORM\Column(type="string")
      */
     private $password;
 
     /**
-     * @var boolean
      * @ORM\Column(type="boolean")
      */
     private $active;
@@ -148,12 +147,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    public function setCreatedAt(DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
 
