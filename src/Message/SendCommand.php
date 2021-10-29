@@ -16,7 +16,7 @@ class SendCommand
 
     public function __construct(int $id, string $command)
     {
-        $this->id = $id;
+        $this->id      = $id;
         $this->command = $command;
     }
 

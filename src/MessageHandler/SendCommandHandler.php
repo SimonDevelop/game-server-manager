@@ -3,40 +3,52 @@
 namespace App\MessageHandler;
 
 use App\Message\SendCommand;
-use App\Repository\ServerRepository;
+use App\Repository\GameServerRepository;
 use App\Service\Connection;
+use App\Service\GameServerOperations;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 class SendCommandHandler implements MessageHandlerInterface
 {
     /**
-     * @var ServerRepository
+     * @var GameServerRepository
      */
-    private $serverRepository;
+    private $gameRepository;
+
+    /**
+     * @var GameServerOperations
+     */
+    private $gameOperations;
 
     /**
      * @var Connection
      */
     private $connection;
 
-    public function __construct(ServerRepository $serverRepository, Connection $connection)
+    public function __construct(
+        GameServerRepository $gameRepository,
+        GameServerOperations $gameOperations,
+        Connection $connection
+    )
     {
-        $this->serverRepository = $serverRepository;
-        $this->connection = $connection;
+        $this->gameRepository = $gameRepository;
+        $this->gameOperations = $gameOperations;
+        $this->connection     = $connection;
     }
 
     public function __invoke(SendCommand $message)
     {
-        $server = $this->serverRepository->findById($message->getId());
-        if (null === $server) {
+        $game = $this->gameRepository->findById($message->getId());
+        if (null === $game) {
             return 0;
         }
 
-        $connection = $this->connection->getConnection($server);
+        $connection = $this->connection->getConnection($game->getServer());
         if (null === $connection) {
             return 0;
         }
 
         $this->connection->sendCommand($connection, $message->getCommand());
+        $this->gameOperations->setStateAfterUpdate($game);
     }
 }

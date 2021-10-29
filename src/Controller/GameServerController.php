@@ -97,16 +97,17 @@ class GameServerController extends AbstractController
     public function gameOn(Request $request, GameServer $game, GameServerOperations $gameOperations): Response
     {
         if ($this->isCsrfTokenValid('on'.$game->getId(), $request->request->get('_token'))) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $game->setStateType(3);
+            $entityManager->persist($game);
+            $entityManager->flush();
+            
             $name    = $gameOperations->getGameServerNameScreen($game);
             $path    = $game->getPath();
             $cmd     = $game->getCommandStart();
             $command = "cd $path && screen -d -m -S $name $cmd";
-            $this->dispatchMessage(new SendCommand(1, $command));
 
-            $entityManager = $this->getDoctrine()->getManager();
-            $game->setStateType(1);
-            $entityManager->persist($game);
-            $entityManager->flush();
+            $this->dispatchMessage(new SendCommand($game->getServer()->getId(), $command));
         }
 
         return $this->redirectToRoute('game_index');
@@ -119,15 +120,15 @@ class GameServerController extends AbstractController
     public function gameOff(Request $request, GameServer $game, GameServerOperations $gameOperations): Response
     {
         if ($this->isCsrfTokenValid('off'.$game->getId(), $request->request->get('_token'))) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $game->setStateType(4);
+            $entityManager->persist($game);
+            $entityManager->flush();
+
             $name    = $gameOperations->getGameServerNameScreen($game);
             $cmd     = $game->getCommandStop();
             $command = "screen -S $name -X stuff \"$cmd\"";
-            $this->dispatchMessage(new SendCommand(1, $command));
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $game->setStateType(0);
-            $entityManager->persist($game);
-            $entityManager->flush();
+            $this->dispatchMessage(new SendCommand($game->getServer()->getId(), $command));
         }
 
         return $this->redirectToRoute('game_index');
@@ -140,14 +141,14 @@ class GameServerController extends AbstractController
     public function gameKill(Request $request, GameServer $game, GameServerOperations $gameOperations): Response
     {
         if ($this->isCsrfTokenValid('kill'.$game->getId(), $request->request->get('_token'))) {
-            $name    = $gameOperations->getGameServerNameScreen($game);
-            $command = "screen -XS $name quit";
-            $this->dispatchMessage(new SendCommand(1, $command));
-
             $entityManager = $this->getDoctrine()->getManager();
-            $game->setStateType(0);
+            $game->setStateType(4);
             $entityManager->persist($game);
             $entityManager->flush();
+
+            $name    = $gameOperations->getGameServerNameScreen($game);
+            $command = "screen -XS $name quit";
+            $this->dispatchMessage(new SendCommand($game->getServer()->getId(), $command));
         }
 
         return $this->redirectToRoute('game_index');
