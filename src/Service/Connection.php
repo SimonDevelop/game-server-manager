@@ -7,6 +7,13 @@ use DivineOmega\SSHConnection\SSHConnection;
 
 class Connection
 {
+    private ServerOperations $serverOperations;
+
+    public function __construct(ServerOperations $serverOperations)
+    {
+        $this->serverOperations = $serverOperations;
+    }
+
     public function getConnection(Server $server): ?SSHConnection
     {
         try {
@@ -17,6 +24,7 @@ class Connection
                 ->withPassword($server->getPassword())
                 ->connect();
 
+            $this->serverOperations->updateLastConnection($server);
             return $connection;
         } catch (\Throwable $th) {
             return null;
