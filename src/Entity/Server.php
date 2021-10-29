@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ServerRepository;
 use Doctrine\ORM\Mapping as ORM;
 use DateTimeImmutable;
+use DateTimeInterface;
 
 /**
  * @ORM\Entity(repositoryClass=ServerRepository::class)
@@ -47,6 +48,11 @@ class Server
      * @ORM\Column(type="string", length=255)
      */
     private $password;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $lastConnection;
 
     /**
      * @ORM\Column(type="datetime")
@@ -139,12 +145,24 @@ class Server
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getLastConnection(): ?DateTimeInterface
+    {
+        return $this->lastConnection;
+    }
+
+    public function setLastConnection(?DateTimeInterface $lastConnection): self
+    {
+        $this->lastConnection = $lastConnection;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    public function setCreatedAt(DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
 
