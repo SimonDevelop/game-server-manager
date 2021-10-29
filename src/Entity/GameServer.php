@@ -6,6 +6,7 @@ use App\Repository\GameServerRepository;
 use App\Entity\Server;
 use Doctrine\ORM\Mapping as ORM;
 use DateTimeImmutable;
+use DateTimeInterface;
 
 /**
  * @ORM\Entity(repositoryClass=GameServerRepository::class)
@@ -69,6 +70,11 @@ class GameServer
     private $stateType;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $installed;
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Server", cascade={"persist"})
      * @ORM\JoinColumn(name="id_server", referencedColumnName="id", nullable=true)
      */
@@ -82,6 +88,7 @@ class GameServer
     public function __construct()
     {
         $this->stateType = 0;
+        $this->installed = false;
         $this->createdAt = new DateTimeImmutable();
     }
 
@@ -184,6 +191,18 @@ class GameServer
         return self::STATE_TYPE[$this->stateType];
     }
 
+    public function isInstalled(): bool
+    {
+        return $this->installer;
+    }
+
+    public function setInstalled(bool $installer): self
+    {
+        $this->installer = $installer;
+
+        return $this;
+    }
+
     public function getServer(): ?Server
     {
         return $this->server;
@@ -196,12 +215,12 @@ class GameServer
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    public function setCreatedAt(DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
 
