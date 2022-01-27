@@ -102,10 +102,13 @@ class GameServerController extends AbstractController
             $entityManager->persist($game);
             $entityManager->flush();
             
-            $name    = $gameOperations->getGameServerNameScreen($game);
-            $path    = $game->getPath();
-            $cmd     = $game->getCommandStart();
-            $command = "cd $path && screen -d -m -S $name $cmd";
+            $name     = $gameOperations->getGameServerNameScreen($game);
+            $path     = $game->getPath();
+            $pathLogs = $gameOperations->getGameServerLog($game);
+            $cmd      = $game->getCommandStart();
+            $command  = "cd $path && screen -c $pathLogs -dmSL $name $cmd";
+            dd($command);
+            die();
 
             $this->dispatchMessage(new SendCommand($game->getServer()->getId(), $command));
         }

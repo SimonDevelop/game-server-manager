@@ -19,6 +19,16 @@ class GameServerOperations
         return 'gameserver_'.$game->getId();
     }
 
+    public function getGameServerLog(GameServer $game): string
+    {
+        $name = "server_logs.conf";
+        $path = $game->getPath();
+        if (substr($path, -1) === '/') {
+            $path = substr($path, 0, -1);
+        }
+        return "$path/$name";
+    }
+
     public function setStateAfterUpdate(GameServer $game): void
     {
         if ($game->getState() === 'Starting') {
