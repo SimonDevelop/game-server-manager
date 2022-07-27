@@ -7,7 +7,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
- * @IsGranted("IS_AUTHENTICATED_ANONYMOUSLY")
+ * @IsGranted("PUBLIC_ACCESS")
  */
 class SecurityController extends AbstractController
 {
