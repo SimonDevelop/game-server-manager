@@ -8,9 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
 use DateTimeImmutable;
 use DateTimeInterface;
 
-/**
- * @ORM\Entity(repositoryClass=GameServerRepository::class)
- */
+#[ORM\Entity(repositoryClass: GameServerRepository::class)]
+#[ORM\Table(name: '`game_server`')]
 class GameServer
 {
     const GAME_TYPE = [
@@ -27,62 +26,40 @@ class GameServer
         5 => 'Updating'
     ];
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $name;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $commandStart;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $commandUpdate;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $commandStop;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $path;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $gameType;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $stateType;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $installed;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Server", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_server", referencedColumnName="id", nullable=true)
-     */
+    #[ORM\ManyToOne(targetEntity: Server::class, cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(name: 'id_server', referencedColumnName: 'id', nullable: true)]
     private $server;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private $createdAt;
 
     public function __construct()
@@ -193,12 +170,12 @@ class GameServer
 
     public function isInstalled(): bool
     {
-        return $this->installer;
+        return $this->installed;
     }
 
-    public function setInstalled(bool $installer): self
+    public function setInstalled(bool $installed): self
     {
-        $this->installer = $installer;
+        $this->installed = $installed;
 
         return $this;
     }
