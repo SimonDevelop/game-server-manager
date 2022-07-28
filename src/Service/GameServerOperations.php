@@ -19,9 +19,19 @@ class GameServerOperations
         return 'gameserver_'.$game->getId();
     }
 
-    public function getGameServerLog(GameServer $game): string
+    public function getGameServerLogConf(GameServer $game): string
     {
         $name = "server_logs.conf";
+        $path = $game->getPath();
+        if (substr($path, -1) === '/') {
+            $path = substr($path, 0, -1);
+        }
+        return "$path/$name";
+    }
+
+    public function getGameServerLog(GameServer $game): string
+    {
+        $name = "server.log";
         $path = $game->getPath();
         if (substr($path, -1) === '/') {
             $path = substr($path, 0, -1);
@@ -38,10 +48,6 @@ class GameServerOperations
 
         if ($game->getState() === 'Stopping') {
             sleep(10);
-            $game->setStateType(0);
-        }
-
-        if ($game->getState() === 'Installing' || $game->getState() === 'Updating') {
             $game->setStateType(0);
         }
 

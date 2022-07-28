@@ -40,4 +40,14 @@ class Connection
             return false;
         }   
     }
+
+    public function sendCommandWithResponse(SSHConnection $connection, string $command): ?string
+    {
+        try {
+            $cmd = $connection->run($command);
+            return $cmd->getOutput();
+        } catch (\Throwable $th) {
+            return null;
+        }   
+    }
 }

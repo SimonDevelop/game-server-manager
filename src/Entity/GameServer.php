@@ -20,10 +20,8 @@ class GameServer
     const STATE_TYPE = [
         0 => 'Off',
         1 => 'On',
-        2 => 'Installing',
+        2 => 'Stopping',
         3 => 'Starting',
-        4 => 'Stopping',
-        5 => 'Updating'
     ];
 
     #[ORM\Id]

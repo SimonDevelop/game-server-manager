@@ -6,6 +6,7 @@ use App\Entity\GameServer;
 use App\Form\GameServerType;
 use App\Message\SendCommand;
 use App\Repository\GameServerRepository;
+use App\Service\Connection;
 use App\Service\GameServerOperations;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,31 +23,43 @@ class GameServerController extends AbstractController
     #@var GameServerRepository
     private $gameServerRepository;
 
+    #@var GameServerOperations
+    private $gameOperations;
+
     #@var EntityManagerInterface
     private $em;
 
     #@var MessageBusInterface
     private $messageBus;
 
-    #@param ServerRepository
+    #@var Connection
+    private $connection;
+
+    #@param GameServerRepository
+    #@param GameServerOperations
     #@param EntityManagerInterface
     #@param MessageBusInterface
+    #@param Connection
     public function __construct(
         GameServerRepository $gameServerRepository,
+        GameServerOperations $gameOperations,
         EntityManagerInterface $em,
-        MessageBusInterface $messageBus
+        MessageBusInterface $messageBus,
+        Connection $connection
     )
     {
-        $this->serverRepository   = $gameServerRepository;
-        $this->em                 = $em;
-        $this->messageBus         = $messageBus;
+        $this->gameServerRepository = $gameServerRepository;
+        $this->gameOperations       = $gameOperations;
+        $this->em                   = $em;
+        $this->messageBus           = $messageBus;
+        $this->connection           = $connection;   
     }
 
     #[Route(path: '/game', name: 'game_index', methods: ['GET'])]
     public function index(): Response
     {
         return $this->render('game/index.html.twig', [
-            'games' => $this->serverRepository->findAll(),
+            'games' => $this->gameServerRepository->findAll(),
         ]);
     }
 
@@ -100,18 +113,18 @@ class GameServerController extends AbstractController
     }
 
     #[Route(path: '/{id}/on', name: 'game_on', methods: ['POST'])]
-    public function gameOn(Request $request, GameServer $game, GameServerOperations $gameOperations): Response
+    public function gameOn(Request $request, GameServer $game): Response
     {
         if ($this->isCsrfTokenValid('on'.$game->getId(), $request->request->get('_token'))) {
             $game->setStateType(3);
             $this->em->persist($game);
             $this->em->flush();
             
-            $name     = $gameOperations->getGameServerNameScreen($game);
+            $name     = $this->gameOperations->getGameServerNameScreen($game);
             $path     = $game->getPath();
-            $pathLogs = $gameOperations->getGameServerLog($game);
+            $pathLogs = $this->gameOperations->getGameServerLogConf($game);
             $cmd      = $game->getCommandStart();
-            $command  = "cd $path && screen -c $pathLogs -dmSL $name $cmd";
+            $command  = "cd $path && touch server.log && screen -c $pathLogs -dmSL $name $cmd";
 
             $this->messageBus->dispatch(new SendCommand($game->getServer()->getId(), $command));
         }
@@ -120,14 +133,14 @@ class GameServerController extends AbstractController
     }
 
     #[Route(path: '/{id}/off', name: 'game_off', methods: ['POST'])]
-    public function gameOff(Request $request, GameServer $game, GameServerOperations $gameOperations): Response
+    public function gameOff(Request $request, GameServer $game): Response
     {
         if ($this->isCsrfTokenValid('off'.$game->getId(), $request->request->get('_token'))) {
-            $game->setStateType(4);
+            $game->setStateType(2);
             $this->em->persist($game);
             $this->em->flush();
 
-            $name    = $gameOperations->getGameServerNameScreen($game);
+            $name    = $this->gameOperations->getGameServerNameScreen($game);
             $cmd     = $game->getCommandStop();
             $command = "screen -S $name -X stuff \"$cmd\"`echo -ne '\015'`";
 
@@ -138,18 +151,36 @@ class GameServerController extends AbstractController
     }
 
     #[Route(path: '/{id}/kill', name: 'game_kill', methods: ['POST'])]
-    public function gameKill(Request $request, GameServer $game, GameServerOperations $gameOperations): Response
+    public function gameKill(Request $request, GameServer $game): Response
     {
         if ($this->isCsrfTokenValid('kill'.$game->getId(), $request->request->get('_token'))) {
-            $game->setStateType(4);
+            $game->setStateType(2);
             $this->em->persist($game);
             $this->em->flush();
 
-            $name    = $gameOperations->getGameServerNameScreen($game);
+            $name    = $this->gameOperations->getGameServerNameScreen($game);
             $command = "screen -XS $name quit";
             $this->messageBus->dispatch(new SendCommand($game->getServer()->getId(), $command));
         }
 
         return $this->redirectToRoute('game_index');
+    }
+
+    #[Route(path: '/{id}/logs', name: 'game_logs', methods: ['GET'])]
+    public function gameLog(GameServer $game): Response
+    {
+        $connection = $this->connection->getConnection($game->getServer());
+        if (null === $connection) {
+            return $this->redirectToRoute('game_index');
+        }
+
+        $logsPath = $this->gameOperations->getGameServerLog($game);
+        $command  = "cat $logsPath";
+        $logs     = $this->connection->sendCommandWithResponse($connection, $command);
+
+        return $this->render('game/logs.html.twig', [
+            'game' => $game,
+            'logs' => $logs
+        ]);
     }
 }
