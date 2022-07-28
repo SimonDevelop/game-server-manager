@@ -594,6 +594,18 @@
     "symfony/twig-pack": {
         "version": "v1.0.1"
     },
+    "symfony/ux-autocomplete": {
+        "version": "2.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "2.2",
+            "ref": "f8fa49e4547904ab278c100564ae1102df774243"
+        },
+        "files": [
+            "config/routes/ux_autocomplete.yaml"
+        ]
+    },
     "symfony/validator": {
         "version": "4.3",
         "recipe": {

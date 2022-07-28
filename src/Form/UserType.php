@@ -34,6 +34,7 @@ class UserType extends AbstractType
                     "Admin" => "ROLE_ADMIN"
                 ]
             ])
+            ->add('gameServers', GameServerAutocompleteField::class)
         ;
 
         // Data transformer

@@ -16,6 +16,7 @@
                 <th>Username</th>
                 <th>Role</th>
                 <th>Date de création</th>
+                <th>Serveurs</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -32,6 +33,13 @@
                     {% endif %}
                 </td>
                 <td>{{ user.createdAt|date('d/m/Y') }}</td>
+                <td>
+                    <button type="button" class="btn btn-secondary"
+                            data-bs-toggle="popover" data-bs-placement="top" data-bs-html="true"
+                            data-bs-content="{% for gameServer in user.gameServers %}{{ gameServer.name }}<br>{% endfor %}">
+                    Voir les serveurs
+                    </button>
+                </td>
                 <td>
                     <div class="row justify-content-start">
                         <div class="col-auto">

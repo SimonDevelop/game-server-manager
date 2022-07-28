@@ -30,6 +30,7 @@
                 <th>Type</th>
                 <th>Etat</th>
                 <th>Date de création</th>
+                <th>Utilisateurs</th>
                 <th>Opérations</th>
                 <th>Actions</th>
             </tr>
@@ -51,6 +52,13 @@
                 {% endif %}
                 </td>
                 <td>{{ game.createdAt|date('d/m/Y') }}</td>
+                <td>
+                    <button type="button" class="btn btn-secondary"
+                            data-bs-toggle="popover" data-bs-placement="top" data-bs-html="true"
+                            data-bs-content="{% for user in game.users %}{{ user.username }}<br>{% endfor %}">
+                    Voir les utilisateurs
+                    </button>
+                </td>
                 <td>
                     <div class="row justify-content-start">
                         {% if game.game == 'Screen Server' %}

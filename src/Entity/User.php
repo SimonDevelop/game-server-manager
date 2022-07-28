@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -35,15 +37,48 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime')]
     private $createdAt;
 
+    #[ORM\ManyToMany(targetEntity: GameServer::class, inversedBy: 'users')]
+    private Collection $gameServers;
+
     public function __construct()
     {
-        $this->enabled   = true;
-        $this->createdAt = new DateTimeImmutable();
+        $this->enabled     = true;
+        $this->createdAt   = new DateTimeImmutable();
+        $this->gameServers = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->username;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials()
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getSalt()
+    {
+        // The salt is not needed for the password-based hashing algorithm,
+        // so we must return null here.
+        return null;
     }
 
     public function getUsername(): ?string
@@ -95,9 +130,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->password;
     }
 
-    public function setPassword(string $password): self
+    public function setPassword(?string $password): self
     {
-        $this->password = $password;
+        if (!is_null($password)) {
+            $this->password = $password;
+        }
 
         return $this;
     }
@@ -115,31 +152,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
+     * @return Collection<int, GameServer>
      */
-    public function getUserIdentifier(): string
+    public function getGameServers(): Collection
     {
-        return (string) $this->username;
+        return $this->gameServers;
     }
 
-    /**
-     * @see UserInterface
-     */
-    public function eraseCredentials()
+    public function addGameServer(GameServer $gameServer): self
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+        if (!$this->gameServers->contains($gameServer)) {
+            $this->gameServers->add($gameServer);
+            $gameServer->addUser($this);
+        }
+
+        return $this;
     }
 
-    /**
-     * @see UserInterface
-     */
-    public function getSalt()
+    public function removeGameServer(GameServer $gameServer): self
     {
-        // The salt is not needed for the password-based hashing algorithm,
-        // so we must return null here.
-        return null;
+        if ($this->gameServers->removeElement($gameServer)) {
+            $gameServer->removeUser($this);
+        }
+
+        return $this;
     }
 }

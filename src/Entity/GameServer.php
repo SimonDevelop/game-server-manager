@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\GameServerRepository;
 use App\Entity\Server;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -50,21 +52,21 @@ class GameServer
     #[ORM\Column(type: 'integer')]
     private $stateType;
 
-    #[ORM\Column(type: 'boolean')]
-    private $installed;
-
-    #[ORM\ManyToOne(targetEntity: Server::class, cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne(targetEntity: Server::class, cascade: ['persist'])]
     #[ORM\JoinColumn(name: 'id_server', referencedColumnName: 'id', nullable: true)]
     private $server;
 
     #[ORM\Column(type: 'datetime')]
     private $createdAt;
 
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'gameServers')]
+    private Collection $users;
+
     public function __construct()
     {
         $this->stateType = 0;
-        $this->installed = false;
         $this->createdAt = new DateTimeImmutable();
+        $this->users     = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -166,18 +168,6 @@ class GameServer
         return self::STATE_TYPE[$this->stateType];
     }
 
-    public function isInstalled(): bool
-    {
-        return $this->installed;
-    }
-
-    public function setInstalled(bool $installed): self
-    {
-        $this->installed = $installed;
-
-        return $this;
-    }
-
     public function getServer(): ?Server
     {
         return $this->server;
@@ -198,6 +188,30 @@ class GameServer
     public function setCreatedAt(DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        $this->users->removeElement($user);
 
         return $this;
     }
