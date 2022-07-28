@@ -27,4 +27,15 @@ class GameServerRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    public function findByUser($id): ?array
+    {
+        return $this->createQueryBuilder('g')
+            ->leftJoin('g.users', 'u')
+            ->addSelect('u')
+            ->andWhere('u.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getResult();
+    }
 }

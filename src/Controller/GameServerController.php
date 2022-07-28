@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-#[Security("is_granted('ROLE_ADMIN')")]
+#[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")]
 #[Route(path: '/game')]
 class GameServerController extends AbstractController
 {
@@ -58,11 +58,19 @@ class GameServerController extends AbstractController
     #[Route(path: '/game', name: 'game_index', methods: ['GET'])]
     public function index(): Response
     {
+        $user = $this->getUser();
+        if (in_array('ROLE_USER', $user->getRoles())) {
+            $gameServers = $this->gameServerRepository->findByUser($user->getId());
+        } else {
+            $gameServers = $this->gameServerRepository->findAll();
+        }
+
         return $this->render('game/index.html.twig', [
-            'games' => $this->gameServerRepository->findAll(),
+            'games' => $gameServers,
         ]);
     }
 
+    #[Security("is_granted('ROLE_ADMIN')")]
     #[Route(path: '/new', name: 'game_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
@@ -83,6 +91,7 @@ class GameServerController extends AbstractController
         ]);
     }
 
+    #[Security("is_granted('ROLE_ADMIN')")]
     #[Route(path: '/{id}/edit', name: 'game_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, GameServer $game): Response
     {
@@ -101,6 +110,7 @@ class GameServerController extends AbstractController
         ]);
     }
 
+    #[Security("is_granted('ROLE_ADMIN')")]
     #[Route(path: '/{id}', name: 'game_delete', methods: ['POST'])]
     public function delete(Request $request, GameServer $game): Response
     {
