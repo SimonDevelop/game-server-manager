@@ -55,7 +55,10 @@
                 <td>
                     <button type="button" class="btn btn-secondary"
                             data-bs-toggle="popover" data-bs-placement="top" data-bs-html="true"
-                            data-bs-content="{% for user in game.users %}{{ user.username }}<br>{% endfor %}">
+                            data-bs-content="
+                            {% for user in game.users %}{{ user.username }}<br>{% endfor %}
+                            {% if game.users is empty %}Aucun utilisateur{% endif %}
+                            ">
                     Voir les utilisateurs
                     </button>
                 </td>

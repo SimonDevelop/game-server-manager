@@ -36,7 +36,10 @@
                 <td>
                     <button type="button" class="btn btn-secondary"
                             data-bs-toggle="popover" data-bs-placement="top" data-bs-html="true"
-                            data-bs-content="{% for gameServer in user.gameServers %}{{ gameServer.name }}<br>{% endfor %}">
+                            data-bs-content="
+                            {% for gameServer in user.gameServers %}{{ gameServer.name }}<br>{% endfor %}
+                            {% if user.gameServers is empty %}Aucun serveur{% endif %}
+                            ">
                     Voir les serveurs
                     </button>
                 </td>
