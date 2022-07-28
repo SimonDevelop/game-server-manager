@@ -204,6 +204,7 @@ class GameServer
     {
         if (!$this->users->contains($user)) {
             $this->users->add($user);
+            $user->addGameServer($this);
         }
 
         return $this;
@@ -211,7 +212,9 @@ class GameServer
 
     public function removeUser(User $user): self
     {
-        $this->users->removeElement($user);
+        if ($this->users->removeElement($user)) {
+            $user->removeGameServer($this);
+        }
 
         return $this;
     }
