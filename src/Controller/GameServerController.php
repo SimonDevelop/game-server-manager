@@ -129,7 +129,7 @@ class GameServerController extends AbstractController
 
             $name    = $gameOperations->getGameServerNameScreen($game);
             $cmd     = $game->getCommandStop();
-            $command = "screen -S $name -X stuff \"$cmd\"";
+            $command = "screen -S $name -X stuff \"$cmd\"`echo -ne '\015'`";
 
             $this->messageBus->dispatch(new SendCommand($game->getServer()->getId(), $command));
         }
