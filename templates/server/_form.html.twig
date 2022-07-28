@@ -1,0 +1,26 @@
+{{ form_start(form) }}
+    <div class="row mt-4">
+        <div class="col-md-6">
+            {{ form_label(form.name, "Nom du serveur", {'attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.name, {'attr': {'class': 'form-control mb-4'}}) }}
+            {{ form_label(form.ip, "Adresse IP", {'attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.ip, {'attr': {'class': 'form-control mb-4'}}) }}
+            {{ form_label(form.port, "Port SSH", {'attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.port, {'attr': {'class': 'form-control mb-4'}}) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_label(form.login, "Login", {'attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.login, {'attr': {'class': 'form-control mb-4'}}) }}
+            {% if error_pass is defined %}
+                <ul>
+                    <li>{{ error_pass }}</li>
+                </ul>
+            {% endif %}
+            {{ form_label(form.password, "Mot de passe", {'attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.password, {'attr': {'class': 'form-control mb-4'}}) }}
+        </div>
+    </div>
+
+    {{ form_widget(form) }}
+    <button class="btn btn-success mb-4">{{ button_label|default('Enregistrer') }}</button>
+{{ form_end(form) }}

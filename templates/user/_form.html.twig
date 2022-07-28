@@ -1,0 +1,21 @@
+{{ form_start(form) }}
+    <div class="row mt-4">
+        <div class="col-md-6">
+            {{ form_label(form.username, "Username", {'attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.username, {'attr': {'class': 'form-control mb-4'}}) }}
+            {{ form_label(form.roles, "Les accès", {'attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.roles, {'attr': {'class': 'form-control mb-4'}}) }}
+        </div>
+        <div class="col-md-6">
+            {% if error_pass is defined %}
+                <ul>
+                    <li>{{ error_pass }}</li>
+                </ul>
+            {% endif %}
+            {{ form_widget(form.password) }}
+        </div>
+    </div>
+
+    {{ form_widget(form) }}
+    <button class="btn btn-success mb-4">{{ button_label|default('Enregistrer') }}</button>
+{{ form_end(form) }}

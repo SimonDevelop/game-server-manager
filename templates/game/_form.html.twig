@@ -1,0 +1,27 @@
+{{ form_start(form) }}
+    <div class="row mt-4">
+        <div class="col-md-6">
+            {{ form_label(form.name, "Nom", {'attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.name, {'attr': {'class': 'form-control mb-4'}}) }}
+            {{ form_label(form.server, "Serveur", {'attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.server, {'attr': {'class': 'form-control mb-4'}}) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_label(form.gameType, "Type", {'attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.gameType, {'attr': {'class': 'form-control mb-4'}}) }}
+            {{ form_label(form.path, "Chemin absolut", {'attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.path, {'attr': {'class': 'form-control mb-4'}}) }}
+        </div>
+        <div class="col-md-12">
+            {{ form_label(form.commandStart, "Commande de démarrage", {'attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.commandStart, {'attr': {'class': 'form-control mb-4'}}) }}
+            {{ form_label(form.commandStop, "Commande d'arrêt", {'attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.commandStop, {'attr': {'class': 'form-control mb-4'}}) }}
+            {{ form_label(form.commandUpdate, "Commande de mise à jour", {'attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.commandUpdate, {'attr': {'class': 'form-control mb-4'}}) }}
+        </div>
+    </div>
+
+    {{ form_widget(form) }}
+    <button class="btn btn-success mb-4">{{ button_label|default('Enregistrer') }}</button>
+{{ form_end(form) }}
