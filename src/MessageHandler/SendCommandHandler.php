@@ -41,18 +41,18 @@ class SendCommandHandler
     {
         $game = $this->gameRepository->findById($message->getId());
         if (null === $game) {
-            return 0;
+            throw new \Exception('Failed to send command');
         }
 
         $connection = $this->connection->getConnection($game->getServer());
         if (null === $connection) {
-            return 0;
+            throw new \Exception('Failed to send command');
         }
 
         $response = $this->connection->sendCommand($connection, $message->getCommand());
         if (false === $response) {
-            throw new \Exception('Failed to send command');
             $this->gameOperations->setStateAfterUpdateFailed($game);
+            throw new \Exception('Failed to send command');
         } else {
             $this->gameOperations->setStateAfterUpdate($game);
         }
