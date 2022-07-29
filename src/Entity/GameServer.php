@@ -15,8 +15,7 @@ use DateTimeInterface;
 class GameServer
 {
     const GAME_TYPE = [
-        0 => "Screen Server",
-        1 => "Docker Server"
+        0 => "Screen Server"
     ];
 
     const STATE_TYPE = [
@@ -24,6 +23,7 @@ class GameServer
         1 => 'On',
         2 => 'Stopping',
         3 => 'Starting',
+        4 => 'Updating',
     ];
 
     #[ORM\Id]
