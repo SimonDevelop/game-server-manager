@@ -28,7 +28,13 @@
               {% for log in logs %}
                   <tr>
                     <td>{{ log.action }} ({{ log.gameServer.name }})</td>
-                    <td>{{ log.user.username }}</td>
+                    <td>
+                      {% if log.user is null %}
+                        System
+                      {% else %}
+                        {{ log.user.username }}
+                      {% endif %}
+                    </td>
                     <td>
                       {% if log.state == true %}
                         <span class="badge rounded-pill text-bg-success">success</span>

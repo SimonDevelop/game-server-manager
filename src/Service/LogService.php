@@ -17,11 +17,13 @@ class LogService
         $this->em = $em;
     }
 
-    public function addLog(User $user, GameServer $gameServer, string $action, bool $state = true)
+    public function addLog(?User $user = null, GameServer $gameServer, string $action, bool $state = true)
     {
         $log = new Log();
         $log->setAction($action);
-        $log->setUser($user);
+        if (null !== $user) {
+            $log->setUser($user);
+        }
         $log->setGameServer($gameServer);
         $log->setState($state);
         $log->setCreatedAt(new DateTimeImmutable());
