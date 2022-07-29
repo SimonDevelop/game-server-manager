@@ -53,7 +53,7 @@ class GameServer
     private $stateType;
 
     #[ORM\ManyToOne(targetEntity: Server::class, cascade: ['persist'])]
-    #[ORM\JoinColumn(name: 'id_server', referencedColumnName: 'id', nullable: true)]
+    #[ORM\JoinColumn(name: 'id_server', referencedColumnName: 'id', nullable: true, onDelete: 'CASCADE')]
     private $server;
 
     #[ORM\Column(type: 'datetime')]
