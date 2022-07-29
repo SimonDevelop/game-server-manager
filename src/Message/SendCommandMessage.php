@@ -2,7 +2,7 @@
 
 namespace App\Message;
 
-class SendCommand
+class SendCommandMessage
 {
     /**
      * @var int

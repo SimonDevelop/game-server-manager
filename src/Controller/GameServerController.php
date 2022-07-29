@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\GameServer;
 use App\Form\GameServerType;
-use App\Message\SendCommand;
+use App\Message\SendCommandMessage;
 use App\Repository\GameServerRepository;
 use App\Service\Connection;
 use App\Service\GameServerOperations;
@@ -129,14 +129,14 @@ class GameServerController extends AbstractController
             $game->setStateType(3);
             $this->em->persist($game);
             $this->em->flush();
-            
+
             $name     = $this->gameOperations->getGameServerNameScreen($game);
             $path     = $game->getPath();
             $pathLogs = $this->gameOperations->getGameServerLogConf($game);
             $cmd      = $game->getCommandStart();
             $command  = "cd $path && touch server.log && screen -c $pathLogs -dmSL $name $cmd";
 
-            $this->messageBus->dispatch(new SendCommand($game->getServer()->getId(), $command));
+            $this->messageBus->dispatch(new SendCommandMessage($game->getId(), $command));
         }
 
         return $this->redirectToRoute('game_index');
@@ -154,7 +154,7 @@ class GameServerController extends AbstractController
             $cmd     = $game->getCommandStop();
             $command = "screen -S $name -X stuff \"$cmd\"`echo -ne '\015'`";
 
-            $this->messageBus->dispatch(new SendCommand($game->getServer()->getId(), $command));
+            $this->messageBus->dispatch(new SendCommandMessage($game->getId(), $command));
         }
 
         return $this->redirectToRoute('game_index');
@@ -170,7 +170,7 @@ class GameServerController extends AbstractController
 
             $name    = $this->gameOperations->getGameServerNameScreen($game);
             $command = "screen -XS $name quit";
-            $this->messageBus->dispatch(new SendCommand($game->getServer()->getId(), $command));
+            $this->messageBus->dispatch(new SendCommandMessage($game->getId(), $command));
         }
 
         return $this->redirectToRoute('game_index');

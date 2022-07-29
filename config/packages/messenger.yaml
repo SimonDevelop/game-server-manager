@@ -4,9 +4,14 @@ framework:
         # failure_transport: failed
         transports:
             # https://symfony.com/doc/current/messenger.html#transport-configuration
-            async:  '%env(MESSENGER_TRANSPORT_DSN)%'
-            # sync: 'sync://'
+            async:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                retry_strategy:
+                    max_retries: 3
+                    delay: 1000
+                    multiplier: 2
+                    max_delay: 0
 
         routing:
             # Route your messages to the transports
-            'App\Message\SendCommand': async
+            'App\Message\SendCommandMessage': async
