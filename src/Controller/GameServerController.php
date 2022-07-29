@@ -55,7 +55,7 @@ class GameServerController extends AbstractController
         $this->connection           = $connection;   
     }
 
-    #[Route(path: '/game', name: 'game_index', methods: ['GET'])]
+    #[Route(path: '/', name: 'game_index', methods: ['GET'])]
     public function index(): Response
     {
         $user = $this->getUser();
