@@ -8,17 +8,17 @@ use DateTimeImmutable;
 
 class ServerOperations
 {
-    private EntityManagerInterface $entityManager;
+    private EntityManagerInterface $em;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $em)
     {
-        $this->entityManager = $entityManager;
+        $this->em = $em;
     }
 
     public function updateLastConnection(Server $server)
     {
         $server->setLastConnection(new DateTimeImmutable());
-        $this->entityManager->persist($server);
-        $this->entityManager->flush();
+        $this->em->persist($server);
+        $this->em->flush();
     }
 }

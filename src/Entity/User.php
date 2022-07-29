@@ -40,11 +40,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: GameServer::class, inversedBy: 'users')]
     private Collection $gameServers;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Log::class)]
+    private Collection $logs;
+
     public function __construct()
     {
         $this->enabled     = true;
         $this->createdAt   = new DateTimeImmutable();
         $this->gameServers = new ArrayCollection();
+        $this->logs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -173,6 +177,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->gameServers->removeElement($gameServer)) {
             $gameServer->removeUser($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Log>
+     */
+    public function getLogs(): Collection
+    {
+        return $this->logs;
+    }
+
+    public function addLog(Log $log): self
+    {
+        if (!$this->logs->contains($log)) {
+            $this->logs->add($log);
+            $log->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLog(Log $log): self
+    {
+        if ($this->logs->removeElement($log)) {
+            // set the owning side to null (unless already changed)
+            if ($log->getUser() === $this) {
+                $log->setUser(null);
+            }
         }
 
         return $this;

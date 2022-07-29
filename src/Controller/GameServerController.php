@@ -8,6 +8,7 @@ use App\Message\SendCommandMessage;
 use App\Repository\GameServerRepository;
 use App\Service\Connection;
 use App\Service\GameServerOperations;
+use App\Service\LogService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,6 +35,9 @@ class GameServerController extends AbstractController
 
     #@var Connection
     private $connection;
+
+    #@var LogService
+    private $logService;
 
     #@param GameServerRepository
     #@param GameServerOperations
@@ -135,8 +139,12 @@ class GameServerController extends AbstractController
             $pathLogs = $this->gameOperations->getGameServerLogConf($game);
             $cmd      = $game->getCommandStart();
             $command  = "cd $path && touch server.log && screen -c $pathLogs -dmSL $name $cmd";
+            $informations = [
+                'user'   => $this->getUser()->getId(),
+                'action' => 'Server started',
+            ];
 
-            $this->messageBus->dispatch(new SendCommandMessage($game->getId(), $command));
+            $this->messageBus->dispatch(new SendCommandMessage($game->getId(), $informations, $command));
         }
 
         return $this->redirectToRoute('game_index');
@@ -153,8 +161,12 @@ class GameServerController extends AbstractController
             $name    = $this->gameOperations->getGameServerNameScreen($game);
             $cmd     = $game->getCommandStop();
             $command = "screen -S $name -X stuff \"$cmd\"`echo -ne '\015'`";
+            $informations = [
+                'user'   => $this->getUser()->getId(),
+                'action' => 'Server stopped',
+            ];
 
-            $this->messageBus->dispatch(new SendCommandMessage($game->getId(), $command));
+            $this->messageBus->dispatch(new SendCommandMessage($game->getId(), $informations, $command));
         }
 
         return $this->redirectToRoute('game_index');
@@ -170,7 +182,12 @@ class GameServerController extends AbstractController
 
             $name    = $this->gameOperations->getGameServerNameScreen($game);
             $command = "screen -XS $name quit";
-            $this->messageBus->dispatch(new SendCommandMessage($game->getId(), $command));
+            $informations = [
+                'user'   => $this->getUser()->getId(),
+                'action' => 'Server killed',
+            ];
+
+            $this->messageBus->dispatch(new SendCommandMessage($game->getId(), $informations, $command));
         }
 
         return $this->redirectToRoute('game_index');

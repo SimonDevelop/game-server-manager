@@ -62,11 +62,15 @@ class GameServer
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'gameServers')]
     private Collection $users;
 
+    #[ORM\OneToMany(mappedBy: 'gameServer', targetEntity: Log::class)]
+    private Collection $logs;
+
     public function __construct()
     {
         $this->stateType = 0;
         $this->createdAt = new DateTimeImmutable();
         $this->users     = new ArrayCollection();
+        $this->logs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -214,6 +218,36 @@ class GameServer
     {
         if ($this->users->removeElement($user)) {
             $user->removeGameServer($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Log>
+     */
+    public function getLogs(): Collection
+    {
+        return $this->logs;
+    }
+
+    public function addLog(Log $log): self
+    {
+        if (!$this->logs->contains($log)) {
+            $this->logs->add($log);
+            $log->setGameServer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLog(Log $log): self
+    {
+        if ($this->logs->removeElement($log)) {
+            // set the owning side to null (unless already changed)
+            if ($log->getGameServer() === $this) {
+                $log->setGameServer(null);
+            }
         }
 
         return $this;
