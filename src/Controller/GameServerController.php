@@ -8,7 +8,6 @@ use App\Message\SendCommandMessage;
 use App\Repository\GameServerRepository;
 use App\Service\Connection;
 use App\Service\GameServerOperations;
-use App\Service\LogService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,9 +34,6 @@ class GameServerController extends AbstractController
 
     #@var Connection
     private $connection;
-
-    #@var LogService
-    private $logService;
 
     #@param GameServerRepository
     #@param GameServerOperations
@@ -85,6 +81,7 @@ class GameServerController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->persist($game);
             $this->em->flush();
+            $this->addFlash('success', 'Création du serveur de jeu réussi !');
 
             return $this->redirectToRoute('game_index');
         }
@@ -104,6 +101,7 @@ class GameServerController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
+            $this->addFlash('success', 'Mise à jour du serveur de jeu réussi !');
 
             return $this->redirectToRoute('game_index');
         }
@@ -121,6 +119,7 @@ class GameServerController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$game->getId(), $request->request->get('_token'))) {
             $this->em->remove($game);
             $this->em->flush();
+            $this->addFlash('success', 'Supression du serveur de jeu réussi !');
         }
 
         return $this->redirectToRoute('game_index');
@@ -144,6 +143,7 @@ class GameServerController extends AbstractController
                 'action' => 'Server started',
             ];
 
+            $this->addFlash('success', 'Serveur de jeu en cours de lancement !');
             $this->messageBus->dispatch(new SendCommandMessage($game->getId(), $informations, $command));
         }
 
@@ -166,6 +166,7 @@ class GameServerController extends AbstractController
                 'action' => 'Server stopped',
             ];
 
+            $this->addFlash('success', 'Serveur de jeu en cours de clôture !');
             $this->messageBus->dispatch(new SendCommandMessage($game->getId(), $informations, $command));
         }
 
@@ -187,6 +188,7 @@ class GameServerController extends AbstractController
                 'action' => 'Server killed',
             ];
 
+            $this->addFlash('success', 'Serveur de jeu en cours de clôture forcé !');
             $this->messageBus->dispatch(new SendCommandMessage($game->getId(), $informations, $command));
         }
 

@@ -71,20 +71,20 @@
                                 <div class="col-auto">
                                     <form method="post" action="{{ path('game_off', {'id': game.id}) }}" onsubmit="return confirm('Êtes vous sûr de vouloir éteindre ce serveur de jeu ?');">
                                         <input type="hidden" name="_token" value="{{ csrf_token('off' ~ game.id) }}">
-                                        <button class="btn btn-warning">Eteindre</button>
+                                        <button class="btn btn-warning"{% if game.state != 'On' and game.state != 'Off' %} disabled{% endif %}>Eteindre</button>
                                     </form>
                                 </div>
                                 <div class="col-auto">
                                     <form method="post" action="{{ path('game_kill', {'id': game.id}) }}" onsubmit="return confirm('Êtes vous sûr de vouloir kill ce serveur de jeu ?');">
                                         <input type="hidden" name="_token" value="{{ csrf_token('kill' ~ game.id) }}">
-                                        <button class="btn btn-danger">Killer</button>
+                                        <button class="btn btn-danger"{% if game.state != 'On' and game.state != 'Off' %} disabled{% endif %}>Killer</button>
                                     </form>
                                 </div>
                             {% else %}
                                 <div class="col-auto">
                                     <form method="post" action="{{ path('game_on', {'id': game.id}) }}" onsubmit="return confirm('Êtes vous sûr de vouloir démarrer ce serveur de jeu ?');">
                                         <input type="hidden" name="_token" value="{{ csrf_token('on' ~ game.id) }}">
-                                        <button class="btn btn-success">Démarrer</button>
+                                        <button class="btn btn-success"{% if game.state != 'On' and game.state != 'Off' %} disabled{% endif %}>Démarrer</button>
                                     </form>
                                 </div>
                             {% endif %}
