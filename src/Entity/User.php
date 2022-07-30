@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -35,15 +37,52 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime')]
     private $createdAt;
 
+    #[ORM\ManyToMany(targetEntity: GameServer::class, inversedBy: 'users')]
+    private Collection $gameServers;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Log::class)]
+    private Collection $logs;
+
     public function __construct()
     {
-        $this->enabled   = true;
-        $this->createdAt = new DateTimeImmutable();
+        $this->enabled     = true;
+        $this->createdAt   = new DateTimeImmutable();
+        $this->gameServers = new ArrayCollection();
+        $this->logs = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->username;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials()
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getSalt()
+    {
+        // The salt is not needed for the password-based hashing algorithm,
+        // so we must return null here.
+        return null;
     }
 
     public function getUsername(): ?string
@@ -95,9 +134,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->password;
     }
 
-    public function setPassword(string $password): self
+    public function setPassword(?string $password): self
     {
-        $this->password = $password;
+        if (!is_null($password)) {
+            $this->password = $password;
+        }
 
         return $this;
     }
@@ -115,31 +156,59 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
+     * @return Collection<int, GameServer>
      */
-    public function getUserIdentifier(): string
+    public function getGameServers(): Collection
     {
-        return (string) $this->username;
+        return $this->gameServers;
+    }
+
+    public function addGameServer(GameServer $gameServer): self
+    {
+        if (!$this->gameServers->contains($gameServer)) {
+            $this->gameServers->add($gameServer);
+            $gameServer->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGameServer(GameServer $gameServer): self
+    {
+        if ($this->gameServers->removeElement($gameServer)) {
+            $gameServer->removeUser($this);
+        }
+
+        return $this;
     }
 
     /**
-     * @see UserInterface
+     * @return Collection<int, Log>
      */
-    public function eraseCredentials()
+    public function getLogs(): Collection
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+        return $this->logs;
     }
 
-    /**
-     * @see UserInterface
-     */
-    public function getSalt()
+    public function addLog(Log $log): self
     {
-        // The salt is not needed for the password-based hashing algorithm,
-        // so we must return null here.
-        return null;
+        if (!$this->logs->contains($log)) {
+            $this->logs->add($log);
+            $log->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLog(Log $log): self
+    {
+        if ($this->logs->removeElement($log)) {
+            // set the owning side to null (unless already changed)
+            if ($log->getUser() === $this) {
+                $log->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }

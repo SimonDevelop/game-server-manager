@@ -19,7 +19,9 @@
       </div>
     {% endfor %}
 
-    <a class="btn btn-success" href="{{ path('game_new') }}">Ajouté un nouveau serveur de jeu</a>
+    {% if is_granted('ROLE_ADMIN') %}
+        <a class="btn btn-success" href="{{ path('game_new') }}">Ajouté un nouveau serveur de jeu</a>
+    {% endif %}
 
     <table class="table table-striped table-hover">
         <thead>
@@ -30,6 +32,7 @@
                 <th>Type</th>
                 <th>Etat</th>
                 <th>Date de création</th>
+                <th>Utilisateurs</th>
                 <th>Opérations</th>
                 <th>Actions</th>
             </tr>
@@ -52,26 +55,36 @@
                 </td>
                 <td>{{ game.createdAt|date('d/m/Y') }}</td>
                 <td>
+                    <button type="button" class="btn btn-secondary"
+                            data-bs-toggle="popover" data-bs-placement="top" data-bs-html="true"
+                            data-bs-content="
+                            {% for user in game.users %}{{ user.username }}<br>{% endfor %}
+                            {% if game.users is empty %}Aucun utilisateur{% endif %}
+                            ">
+                    Voir les utilisateurs
+                    </button>
+                </td>
+                <td>
                     <div class="row justify-content-start">
                         {% if game.game == 'Screen Server' %}
                             {% if game.state == 'On' %}
                                 <div class="col-auto">
                                     <form method="post" action="{{ path('game_off', {'id': game.id}) }}" onsubmit="return confirm('Êtes vous sûr de vouloir éteindre ce serveur de jeu ?');">
                                         <input type="hidden" name="_token" value="{{ csrf_token('off' ~ game.id) }}">
-                                        <button class="btn btn-warning">Eteindre</button>
+                                        <button class="btn btn-warning"{% if game.state != 'On' and game.state != 'Off' %} disabled{% endif %}>Eteindre</button>
                                     </form>
                                 </div>
                                 <div class="col-auto">
                                     <form method="post" action="{{ path('game_kill', {'id': game.id}) }}" onsubmit="return confirm('Êtes vous sûr de vouloir kill ce serveur de jeu ?');">
                                         <input type="hidden" name="_token" value="{{ csrf_token('kill' ~ game.id) }}">
-                                        <button class="btn btn-danger">Killer</button>
+                                        <button class="btn btn-danger"{% if game.state != 'On' and game.state != 'Off' %} disabled{% endif %}>Killer</button>
                                     </form>
                                 </div>
                             {% else %}
                                 <div class="col-auto">
                                     <form method="post" action="{{ path('game_on', {'id': game.id}) }}" onsubmit="return confirm('Êtes vous sûr de vouloir démarrer ce serveur de jeu ?');">
                                         <input type="hidden" name="_token" value="{{ csrf_token('on' ~ game.id) }}">
-                                        <button class="btn btn-success">Démarrer</button>
+                                        <button class="btn btn-success"{% if game.state != 'On' and game.state != 'Off' %} disabled{% endif %}>Démarrer</button>
                                     </form>
                                 </div>
                             {% endif %}
@@ -84,11 +97,15 @@
                     <div class="row justify-content-start">
                         <div class="col-auto">
                             <a class="btn btn-primary" href="{{ path('game_logs', {'id': game.id}) }}">Logs</a>
-                            <a class="btn btn-warning" href="{{ path('game_edit', {'id': game.id}) }}">Editer</a>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <a class="btn btn-warning" href="{{ path('game_edit', {'id': game.id}) }}">Editer</a>
+                            {% endif %}
                         </div>
-                        <div class="col-auto">
-                            {{ include('game/_delete_form.html.twig') }}
-                        </div>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <div class="col-auto">
+                                {{ include('game/_delete_form.html.twig') }}
+                            </div>
+                        {% endif %}
                     </div>
                 </td>
             </tr>
@@ -100,6 +117,8 @@
         </tbody>
     </table>
 
-    <a class="btn btn-success" href="{{ path('game_new') }}">Ajouté un nouveau serveur de jeu</a>
+    {% if is_granted('ROLE_ADMIN') %}
+        <a class="btn btn-success" href="{{ path('game_new') }}">Ajouté un nouveau serveur de jeu</a>
+    {% endif %}
 </div>
 {% endblock %}

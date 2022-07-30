@@ -1,8 +1,59 @@
 {% extends "base.html.twig" %}
-{% block title "Home" %}
+{% block title "Dashboard" %}
 {% block body %}
 
 <div class="container mt-4">
-  <h2>Game Server Manager</h2>
+  <h2 class="text-center">Game Server Manager</h2>
+  <div class="row">
+    <div class="col col-lg-4">
+      <div class="card">
+        <div class="card-body">
+          {{ render_chart(chart) }}
+        </div>
+      </div>
+    </div>
+    <div class="col col-lg-8">
+      <div class="card">
+        <div class="card-body">
+          <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Auteur</th>
+                    <th>Etat</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+              {% for log in logs %}
+                  <tr>
+                    <td>{{ log.action }} ({{ log.gameServer.name }})</td>
+                    <td>
+                      {% if log.user is null %}
+                        System
+                      {% else %}
+                        {{ log.user.username }}
+                      {% endif %}
+                    </td>
+                    <td>
+                      {% if log.state == true %}
+                        <span class="badge rounded-pill text-bg-success">success</span>
+                      {% elseif log.state == false %}
+                        <span class="badge rounded-pill text-bg-danger">failed</span>
+                      {% endif %}
+                    </td>
+                    <td>{{ log.createdAt|date('d/m/Y H:i:s') }}</td>
+                  </tr>
+              {% else %}
+                  <tr>
+                      <td colspan="10">no records found</td>
+                  </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}

@@ -8,7 +8,8 @@ framework:
     # Remove or comment this section to explicitly disable session support.
     session:
         handler_id: Symfony\Component\HttpFoundation\Session\Storage\Handler\RedisSessionHandler
-        cookie_lifetime: 172800
+        cookie_lifetime: 86400
+        gc_maxlifetime: 86400
         cookie_secure: auto
         cookie_samesite: lax
         storage_factory_id: session.storage.factory.native

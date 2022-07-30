@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\GameServerRepository;
 use App\Entity\Server;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -13,8 +15,7 @@ use DateTimeInterface;
 class GameServer
 {
     const GAME_TYPE = [
-        0 => "Screen Server",
-        1 => "Docker Server"
+        0 => "Screen Server"
     ];
 
     const STATE_TYPE = [
@@ -22,6 +23,7 @@ class GameServer
         1 => 'On',
         2 => 'Stopping',
         3 => 'Starting',
+        4 => 'Updating',
     ];
 
     #[ORM\Id]
@@ -50,21 +52,25 @@ class GameServer
     #[ORM\Column(type: 'integer')]
     private $stateType;
 
-    #[ORM\Column(type: 'boolean')]
-    private $installed;
-
-    #[ORM\ManyToOne(targetEntity: Server::class, cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(name: 'id_server', referencedColumnName: 'id', nullable: true)]
+    #[ORM\ManyToOne(targetEntity: Server::class, cascade: ['persist'])]
+    #[ORM\JoinColumn(name: 'id_server', referencedColumnName: 'id', nullable: true, onDelete: 'CASCADE')]
     private $server;
 
     #[ORM\Column(type: 'datetime')]
     private $createdAt;
 
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'gameServers')]
+    private Collection $users;
+
+    #[ORM\OneToMany(mappedBy: 'gameServer', targetEntity: Log::class)]
+    private Collection $logs;
+
     public function __construct()
     {
         $this->stateType = 0;
-        $this->installed = false;
         $this->createdAt = new DateTimeImmutable();
+        $this->users     = new ArrayCollection();
+        $this->logs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -166,18 +172,6 @@ class GameServer
         return self::STATE_TYPE[$this->stateType];
     }
 
-    public function isInstalled(): bool
-    {
-        return $this->installed;
-    }
-
-    public function setInstalled(bool $installed): self
-    {
-        $this->installed = $installed;
-
-        return $this;
-    }
-
     public function getServer(): ?Server
     {
         return $this->server;
@@ -198,6 +192,63 @@ class GameServer
     public function setCreatedAt(DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->addGameServer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->users->removeElement($user)) {
+            $user->removeGameServer($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Log>
+     */
+    public function getLogs(): Collection
+    {
+        return $this->logs;
+    }
+
+    public function addLog(Log $log): self
+    {
+        if (!$this->logs->contains($log)) {
+            $this->logs->add($log);
+            $log->setGameServer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLog(Log $log): self
+    {
+        if ($this->logs->removeElement($log)) {
+            // set the owning side to null (unless already changed)
+            if ($log->getGameServer() === $this) {
+                $log->setGameServer(null);
+            }
+        }
 
         return $this;
     }

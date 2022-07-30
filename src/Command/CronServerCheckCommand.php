@@ -6,6 +6,7 @@ use App\Repository\GameServerRepository;
 use App\Service\GameServerOperations;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Service\Connection;
+use App\Service\LogService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -29,6 +30,9 @@ class CronServerCheckCommand extends Command
     #@var Connection
     private $connection;
 
+    #@var LogService
+    private $logService;
+
     #@param GameServerRepository
     #@param GameServerOperations
     #@param EntityManagerInterface
@@ -37,13 +41,15 @@ class CronServerCheckCommand extends Command
         GameServerRepository $gameServerRepository,
         GameServerOperations $gameOperations,
         EntityManagerInterface $em,
-        Connection $connection
+        Connection $connection,
+        LogService $logService
     )
     {
         $this->gameServerRepository = $gameServerRepository;
         $this->gameOperations       = $gameOperations;
         $this->em                   = $em;
         $this->connection           = $connection;
+        $this->logService           = $logService;
 
         parent::__construct();
     }
@@ -64,6 +70,7 @@ class CronServerCheckCommand extends Command
                     $gameServer->setStateType(1);
                     $this->em->persist($gameServer);
                     $this->em->flush();
+                    $this->logService->addLog(null, $gameServer, 'Server updated to running');
                 }
 
                 if ($state === 'On' && !str_contains($logs, $name)) {
@@ -71,6 +78,7 @@ class CronServerCheckCommand extends Command
                     $gameServer->setStateType(0);
                     $this->em->persist($gameServer);
                     $this->em->flush();
+                    $this->logService->addLog(null, $gameServer, 'Server updated to stopped');
                 }
             }
         }

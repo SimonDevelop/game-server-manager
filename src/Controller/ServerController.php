@@ -56,6 +56,7 @@ class ServerController extends AbstractController
             }
             $this->em->persist($server);
             $this->em->flush();
+            $this->addFlash('success', 'Création du serveur réussi !');
 
             return $this->redirectToRoute('server_index');
         }
@@ -74,6 +75,7 @@ class ServerController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
+            $this->addFlash('success', 'Mise à jour du serveur réussi !');
 
             return $this->redirectToRoute('server_index');
         }
@@ -90,6 +92,7 @@ class ServerController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$server->getId(), $request->request->get('_token'))) {
             $this->em->remove($server);
             $this->em->flush();
+            $this->addFlash('success', 'Supression du serveur réussi !');
         }
 
         return $this->redirectToRoute('server_index');

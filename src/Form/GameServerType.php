@@ -28,7 +28,9 @@ class GameServerType extends AbstractType
                 "required" => true,
                 "choice_label" => "name",
                 "multiple" => false,
-                
+            ])
+            ->add('users', UserAutocompleteField::class, [
+                "by_reference" => false
             ])
         ;
     }

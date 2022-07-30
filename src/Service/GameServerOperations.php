@@ -7,11 +7,11 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class GameServerOperations
 {
-    private EntityManagerInterface $entityManager;
+    private EntityManagerInterface $em;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $em)
     {
-        $this->entityManager = $entityManager;
+        $this->em = $em;
     }
 
     public function getGameServerNameScreen(GameServer $game): string
@@ -51,7 +51,23 @@ class GameServerOperations
             $game->setStateType(0);
         }
 
-        $this->entityManager->persist($game);
-        $this->entityManager->flush();
+        $this->em->persist($game);
+        $this->em->flush();
+    }
+
+    public function setStateAfterUpdateFailed(GameServer $game): void
+    {
+        if ($game->getState() === 'Starting') {
+            sleep(10);
+            $game->setStateType(0);
+        }
+
+        if ($game->getState() === 'Stopping') {
+            sleep(10);
+            $game->setStateType(1);
+        }
+
+        $this->em->persist($game);
+        $this->em->flush();
     }
 }
