@@ -94,7 +94,7 @@ class CronServerUpdateCommand extends Command
             $cmd      = $game->getCommandStop();
             $command  = "screen -S $name -X stuff \"$cmd\"`echo -ne '\015'`";
             $response = $this->connection->sendCommand($connection, $command);
-            if (null === $response) {
+            if (false === $response) {
                 $output->writeln('Failed to stop game server');
                 $game->setStateType(1);
                 $this->em->persist($game);
@@ -115,8 +115,8 @@ class CronServerUpdateCommand extends Command
         $cmd      = $game->getCommandUpdate();
         $path     = $game->getPath();
         $command  = "cd $path && $cmd";
-        $response = $this->connection->sendCommand($connection, $command);
-        if (false === $response) {
+        $response = $this->connection->sendCommandWithResponse($connection, $command);
+        if (null === $response) {
             $output->writeln('Failed to update game server');
             $game->setStateType(0);
             $this->em->persist($game);
@@ -142,7 +142,7 @@ class CronServerUpdateCommand extends Command
             $cmd      = $game->getCommandStart();
             $command  = "cd $path && touch server.log && screen -c $pathLogs -dmSL $name $cmd";
             $response = $this->connection->sendCommand($connection, $command);
-            if (null === $connection) {
+            if (false === $response) {
                 $output->writeln('Failed to start game server');
 
                 return Command::FAILURE;

@@ -93,7 +93,7 @@ class CronServerStartCommand extends Command
         $cmd      = $game->getCommandStart();
         $command  = "cd $path && touch server.log && screen -c $pathLogs -dmSL $name $cmd";
         $response = $this->connection->sendCommand($connection, $command);
-        if (null === $connection) {
+        if (false === $response) {
             $output->writeln('Failed to start game server');
 
             return Command::FAILURE;
