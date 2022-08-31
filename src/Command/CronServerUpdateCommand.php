@@ -11,6 +11,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
@@ -58,11 +59,19 @@ class CronServerUpdateCommand extends Command
     protected function configure(): void
     {
         $this->addArgument('id', InputArgument::REQUIRED, 'id of game server');
+        $this->addOption(
+            'time',
+            'time',
+            InputOption::VALUE_OPTIONAL,
+            'time of game server restart after update (in seconds)',
+            120
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $id   = $input->getArgument('id');
+        $time = $input->getOption('time');
         $game = $this->gameServerRepository->findById($id);
 
         if (null === $game) {
@@ -116,8 +125,8 @@ class CronServerUpdateCommand extends Command
         $path     = $game->getPath();
         $command  = "cd $path && $cmd";
         $response = $this->connection->sendCommand($connection, $command);
-        // Wait 2 minutes for the update to complete (Estimated)
-        sleep(120);
+        // Wait x minutes for the update to complete (Estimated)
+        sleep($time);
         if (false === $response) {
             $output->writeln('Failed to update game server');
             $game->setStateType(0);
@@ -146,6 +155,9 @@ class CronServerUpdateCommand extends Command
             $response = $this->connection->sendCommand($connection, $command);
             if (false === $response) {
                 $output->writeln('Failed to start game server');
+                $game->setStateType(0);
+                $this->em->persist($game);
+                $this->em->flush();
 
                 return Command::FAILURE;
             } else {
