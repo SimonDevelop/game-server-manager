@@ -115,8 +115,10 @@ class CronServerUpdateCommand extends Command
         $cmd      = $game->getCommandUpdate();
         $path     = $game->getPath();
         $command  = "cd $path && $cmd";
-        $response = $this->connection->sendCommandWithResponse($connection, $command);
-        if (null === $response) {
+        $response = $this->connection->sendCommand($connection, $command);
+        // Wait 2 minutes for the update to complete (Estimated)
+        sleep(120);
+        if (false === $response) {
             $output->writeln('Failed to update game server');
             $game->setStateType(0);
             $this->em->persist($game);
