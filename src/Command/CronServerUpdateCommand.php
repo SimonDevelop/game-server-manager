@@ -125,6 +125,11 @@ class CronServerUpdateCommand extends Command
             return Command::FAILURE;
         } else {
             $this->logService->addLog(null, $game, 'Server updated');
+            if (false === $needStart) {
+                $game->setStateType(0);
+                $this->em->persist($game);
+                $this->em->flush();
+            }
         }
 
         if ($needStart) {
