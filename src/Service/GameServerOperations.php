@@ -51,6 +51,11 @@ class GameServerOperations
             $game->setStateType(0);
         }
 
+        if ($game->getState() === 'Updating') {
+            sleep(10);
+            $game->setStateType(0);
+        }
+
         $this->em->persist($game);
         $this->em->flush();
     }
@@ -65,6 +70,11 @@ class GameServerOperations
         if ($game->getState() === 'Stopping') {
             sleep(10);
             $game->setStateType(1);
+        }
+
+        if ($game->getState() === 'Updating') {
+            sleep(10);
+            $game->setStateType(0);
         }
 
         $this->em->persist($game);

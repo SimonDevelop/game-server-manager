@@ -173,6 +173,29 @@ class GameServerController extends AbstractController
         return $this->redirectToRoute('game_index');
     }
 
+    #[Route(path: '/{id}/update', name: 'game_update', methods: ['POST'])]
+    public function gameUpdate(Request $request, GameServer $game): Response
+    {
+        if ($this->isCsrfTokenValid('update'.$game->getId(), $request->request->get('_token'))) {
+            $game->setStateType(4);
+            $this->em->persist($game);
+            $this->em->flush();
+
+            $path    = $game->getPath();
+            $cmd     = $game->getCommandUpdate();
+            $command = "cd $path && $cmd";
+            $informations = [
+                'user'   => $this->getUser()->getId(),
+                'action' => 'Server Updating',
+            ];
+
+            $this->addFlash('success', 'Serveur de jeu en cours de mise à jour !');
+            $this->messageBus->dispatch(new SendCommandMessage($game->getId(), $informations, $command));
+        }
+
+        return $this->redirectToRoute('game_index');
+    }
+
     #[Route(path: '/{id}/kill', name: 'game_kill', methods: ['POST'])]
     public function gameKill(Request $request, GameServer $game): Response
     {
