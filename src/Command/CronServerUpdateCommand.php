@@ -102,9 +102,13 @@ class CronServerUpdateCommand extends Command
             $name     = $this->gameOperations->getGameServerNameScreen($game);
             $cmd      = $game->getCommandStop();
             $command  = "screen -S $name -X stuff \"$cmd\"`echo -ne '\015'`";
+            
+            $output->writeln('Server stopping');
             $response = $this->connection->sendCommand($connection, $command);
+            sleep(10);
+
             if (false === $response) {
-                $output->writeln('Failed to stop game server');
+                $output->writeln("Failed to stop game server ($name)");
                 $game->setStateType(1);
                 $this->em->persist($game);
                 $this->em->flush();
@@ -113,7 +117,6 @@ class CronServerUpdateCommand extends Command
             } else {
                 $needStart = true;
                 $this->logService->addLog($game, 'Server stopped', true, null);
-                sleep(10);
             }
         }
 
@@ -124,17 +127,19 @@ class CronServerUpdateCommand extends Command
         $cmd      = $game->getCommandUpdate();
         $path     = $game->getPath();
         $command  = "cd $path && $cmd";
+        $output->writeln('Server updating');
         $response = $this->connection->sendCommand($connection, $command);
-        // Wait x minutes for the update to complete (Estimated)
         sleep($time);
+
         if (false === $response) {
-            $output->writeln('Failed to update game server');
+            $output->writeln("Failed to update game server ($name)");
             $game->setStateType(0);
             $this->em->persist($game);
             $this->em->flush();
 
             return Command::FAILURE;
         } else {
+            $output->writeln('Server updated');
             $this->logService->addLog($game, 'Server updated', true, null);
             if (false === $needStart) {
                 $game->setStateType(0);
@@ -147,21 +152,26 @@ class CronServerUpdateCommand extends Command
             $game->setStateType(3);
             $this->em->persist($game);
             $this->em->flush();
+
             $name     = $this->gameOperations->getGameServerNameScreen($game);
             $path     = $game->getPath();
             $pathLogs = $this->gameOperations->getGameServerLogConf($game);
             $cmd      = $game->getCommandStart();
             $command  = "cd $path && touch server.log && screen -c $pathLogs -dmSL $name $cmd";
+
+            $output->writeln('Server starting');
             $response = $this->connection->sendCommand($connection, $command);
+            sleep(10);
+
             if (false === $response) {
-                $output->writeln('Failed to start game server');
+                $output->writeln("Failed to start game server ($name)");
                 $game->setStateType(0);
                 $this->em->persist($game);
                 $this->em->flush();
 
                 return Command::FAILURE;
             } else {
-                sleep(10);
+                $output->writeln('Server started');
                 $this->logService->addLog($game, 'Server started', true, null);
                 $game->setStateType(1);
                 $this->em->persist($game);

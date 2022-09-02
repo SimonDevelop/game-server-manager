@@ -87,12 +87,17 @@ class CronServerStartCommand extends Command
         $game->setStateType(3);
         $this->em->persist($game);
         $this->em->flush();
+
         $name     = $this->gameOperations->getGameServerNameScreen($game);
         $path     = $game->getPath();
         $pathLogs = $this->gameOperations->getGameServerLogConf($game);
         $cmd      = $game->getCommandStart();
         $command  = "cd $path && touch server.log && screen -c $pathLogs -dmSL $name $cmd";
+
+        $output->writeln('Server starting');
         $response = $this->connection->sendCommand($connection, $command);
+        sleep(10);
+
         if (false === $response) {
             $output->writeln('Failed to start game server');
             $game->setStateType(0);
@@ -101,7 +106,6 @@ class CronServerStartCommand extends Command
 
             return Command::FAILURE;
         } else {
-            sleep(10);
             $this->logService->addLog($game, 'Server started', true, null);
             $game->setStateType(1);
             $this->em->persist($game);
