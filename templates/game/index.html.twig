@@ -91,7 +91,7 @@
                                     <div class="col-auto">
                                         <form method="post" action="{{ path('game_update', {'id': game.id}) }}" onsubmit="return confirm('Êtes vous sûr de vouloir lancer la mise à jour de ce serveur de jeu ?');">
                                             <input type="hidden" name="_token" value="{{ csrf_token('update' ~ game.id) }}">
-                                            <button class="btn btn-warning"{% if game.state == 'Updating' %} disabled{% endif %}>Mettre à jour</button>
+                                            <button class="btn btn-warning"{% if game.state != 'Off' %} disabled{% endif %}>Mettre à jour</button>
                                         </form>
                                     </div>
                                 {% endif %}
