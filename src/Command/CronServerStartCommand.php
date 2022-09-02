@@ -95,6 +95,9 @@ class CronServerStartCommand extends Command
         $response = $this->connection->sendCommand($connection, $command);
         if (false === $response) {
             $output->writeln('Failed to start game server');
+            $game->setStateType(0);
+            $this->em->persist($game);
+            $this->em->flush();
 
             return Command::FAILURE;
         } else {
