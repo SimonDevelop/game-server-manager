@@ -14,8 +14,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
-    name: 'cron:server:start',
-    description: 'Run the start command of the game server',
+    name: 'cron:server:stop',
+    description: 'Run the stop command of the game server',
 )]
 class CronServerStartCommand extends Command
 {
@@ -71,8 +71,8 @@ class CronServerStartCommand extends Command
             return Command::FAILURE;
         }
 
-        if (null === $game->getCommandStart()) {
-            $output->writeln('No start command set');
+        if (null === $game->getCommandStop()) {
+            $output->writeln('No stop command set');
 
             return Command::FAILURE;
         }
@@ -84,30 +84,28 @@ class CronServerStartCommand extends Command
             return Command::FAILURE;
         }
 
-        $game->setStateType(3);
+        $game->setStateType(2);
         $this->em->persist($game);
         $this->em->flush();
 
         $name     = $this->gameOperations->getGameServerNameScreen($game);
-        $path     = $game->getPath();
-        $pathLogs = $this->gameOperations->getGameServerLogConf($game);
         $cmd      = $game->getCommandStart();
-        $command  = "cd $path && touch server.log && screen -c $pathLogs -dmSL $name $cmd";
+        $command  = "screen -S $name -X stuff \"$cmd\"`echo -ne '\015'`";
 
-        $output->writeln('Server starting');
+        $output->writeln('Server stopping');
         $response = $this->connection->sendCommand($connection, $command);
         sleep(10);
 
         if (false === $response) {
-            $output->writeln('Failed to start game server');
-            $game->setStateType(0);
+            $output->writeln('Failed to stop game server');
+            $game->setStateType(1);
             $this->em->persist($game);
             $this->em->flush();
 
             return Command::FAILURE;
         } else {
-            $this->logService->addLog($game, 'Server started', true, null);
-            $game->setStateType(1);
+            $this->logService->addLog($game, 'Server stopped', true, null);
+            $game->setStateType(0);
             $this->em->persist($game);
             $this->em->flush();
         }
