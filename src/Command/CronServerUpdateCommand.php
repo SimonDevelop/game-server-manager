@@ -112,7 +112,7 @@ class CronServerUpdateCommand extends Command
                 return Command::FAILURE;
             } else {
                 $needStart = true;
-                $this->logService->addLog(null, $game, 'Server stopped');
+                $this->logService->addLog($game, 'Server stopped', true, null);
                 sleep(10);
             }
         }
@@ -135,7 +135,7 @@ class CronServerUpdateCommand extends Command
 
             return Command::FAILURE;
         } else {
-            $this->logService->addLog(null, $game, 'Server updated');
+            $this->logService->addLog($game, 'Server updated', true, null);
             if (false === $needStart) {
                 $game->setStateType(0);
                 $this->em->persist($game);
@@ -162,7 +162,7 @@ class CronServerUpdateCommand extends Command
                 return Command::FAILURE;
             } else {
                 sleep(10);
-                $this->logService->addLog(null, $game, 'Server started');
+                $this->logService->addLog($game, 'Server started', true, null);
                 $game->setStateType(1);
                 $this->em->persist($game);
                 $this->em->flush();

@@ -70,7 +70,7 @@ class CronServerCheckCommand extends Command
                     $gameServer->setStateType(1);
                     $this->em->persist($gameServer);
                     $this->em->flush();
-                    $this->logService->addLog(null, $gameServer, 'Server updated to running');
+                    $this->logService->addLog($gameServer, 'Server updated to running', true, null);
                 }
 
                 if ($state === 'On' && !str_contains($logs, $name)) {
@@ -78,7 +78,7 @@ class CronServerCheckCommand extends Command
                     $gameServer->setStateType(0);
                     $this->em->persist($gameServer);
                     $this->em->flush();
-                    $this->logService->addLog(null, $gameServer, 'Server updated to stopped');
+                    $this->logService->addLog($gameServer, 'Server updated to stopped', true, null);
                 }
             }
         }

@@ -102,7 +102,7 @@ class CronServerStartCommand extends Command
             return Command::FAILURE;
         } else {
             sleep(10);
-            $this->logService->addLog(null, $game, 'Server started');
+            $this->logService->addLog($game, 'Server started', true, null);
             $game->setStateType(1);
             $this->em->persist($game);
             $this->em->flush();
