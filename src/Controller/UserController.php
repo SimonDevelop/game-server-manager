@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[Security("is_granted('ROLE_ADMIN')")]
 #[Route(path: '/user')]
@@ -39,7 +40,7 @@ class UserController extends AbstractController
     }
 
     #[Route(path: '/new', name: 'user_new', methods: ['GET', 'POST'])]
-    public function new(Request $request): Response
+    public function new(Request $request, UserPasswordHasherInterface $userPasswordHasher): Response
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -53,6 +54,12 @@ class UserController extends AbstractController
                     'error_pass' => "Vous devez saisir un mot de passe."
                 ]);
             }
+            $user->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $user,
+                    $form->get('password')->getData()
+                )
+            );
             $this->em->persist($user);
             $this->em->flush();
             $this->addFlash('success', 'Création de l\'utilisateur réussi !');
@@ -67,12 +74,18 @@ class UserController extends AbstractController
     }
 
     #[Route(path: '/{id}/edit', name: 'user_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user): Response
+    public function edit(Request $request, User $user, UserPasswordHasherInterface $userPasswordHasher): Response
     {
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $user->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $user,
+                    $form->get('password')->getData()
+                )
+            );
             $this->em->flush();
             $this->addFlash('success', 'Mise à jour de l\'utilisateur réussi !');
 
