@@ -102,7 +102,7 @@ class CronServerUpdateCommand extends Command
             $name     = $this->gameOperations->getGameServerNameScreen($game);
             $cmd      = $game->getCommandStop();
             $command  = "screen -S $name -X stuff \"$cmd\"`echo -ne '\015'`";
-            
+
             $output->writeln('Server stopping');
             $response = $this->connection->sendCommand($connection, $command);
             sleep(10);

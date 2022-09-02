@@ -235,4 +235,21 @@ class GameServerController extends AbstractController
             'logs' => $logs
         ]);
     }
+
+    #[Route(path: '/{id}/logs/clear', name: 'game_logs_clear', methods: ['GET'])]
+    public function gameLogClear(GameServer $game): Response
+    {
+        $connection = $this->connection->getConnection($game->getServer());
+        if (null === $connection) {
+            return $this->redirectToRoute('game_index');
+        }
+
+        $logsPath = $this->gameOperations->getGameServerLog($game);
+        $command  = "echo '' > $logsPath";
+        $this->connection->sendCommand($connection, $command);
+
+        return $this->redirectToRoute('game_logs', [
+            'id' => $game->getId()
+        ]);
+    }
 }
