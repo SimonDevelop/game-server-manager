@@ -11,13 +11,14 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
     name: 'cron:server:stop',
     description: 'Run the stop command of the game server',
 )]
-class CronServerStartCommand extends Command
+class CronServerStopCommand extends Command
 {
     #@var GameServerRepository
     private $gameServerRepository;
@@ -58,6 +59,12 @@ class CronServerStartCommand extends Command
     protected function configure(): void
     {
         $this->addArgument('id', InputArgument::REQUIRED, 'id of game server');
+        $this->addOption(
+            'kill',
+            'kill',
+            InputOption::VALUE_NONE,
+            'Option for inject kill command'
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -87,10 +94,14 @@ class CronServerStartCommand extends Command
         $game->setStateType(2);
         $this->em->persist($game);
         $this->em->flush();
-
-        $name     = $this->gameOperations->getGameServerNameScreen($game);
-        $cmd      = $game->getCommandStart();
-        $command  = "screen -S $name -X stuff \"$cmd\"`echo -ne '\015'`";
+        $name = $this->gameOperations->getGameServerNameScreen($game);
+        $cmd  = $game->getCommandStop();
+        
+        if ($input->getOption('kill')) {
+            $command  = "screen -XS $name quit";
+        } else {
+            $command  = "screen -S $name -X stuff \"$cmd\"`echo -ne '\015'`";
+        }
 
         $output->writeln('Server stopping');
         $response = $this->connection->sendCommand($connection, $command);
