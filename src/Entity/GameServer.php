@@ -14,10 +14,6 @@ use DateTimeInterface;
 #[ORM\Table(name: '`game_server`')]
 class GameServer
 {
-    const GAME_TYPE = [
-        0 => "Screen Server"
-    ];
-
     const STATE_TYPE = [
         0 => 'Off',
         1 => 'On',
@@ -136,23 +132,6 @@ class GameServer
         $this->path = $path;
 
         return $this;
-    }
-
-    public function getGameType(): ?int
-    {
-        return $this->gameType;
-    }
-
-    public function setGameType(int $gameType): self
-    {
-        $this->gameType = $gameType;
-
-        return $this;
-    }
-
-    public function getGame(): string
-    {
-        return self::GAME_TYPE[$this->gameType];
     }
 
     public function getStateType(): ?int

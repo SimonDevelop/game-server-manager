@@ -29,7 +29,6 @@
                 <th>Id</th>
                 <th>Nom</th>
                 <th>Serveur</th>
-                <th>Type</th>
                 <th>Etat</th>
                 <th>Date de création</th>
                 <th>Utilisateurs</th>
@@ -43,7 +42,6 @@
                 <td>{{ game.id }}</td>
                 <td>{{ game.name }}</td>
                 <td>{{ game.server.name }}</td>
-                <td>{{ game.game }}</td>
                 <td>
                 {% if game.state == 'On' %}
                     <span class="badge rounded-pill bg-success">{{ game.state }}</span>
