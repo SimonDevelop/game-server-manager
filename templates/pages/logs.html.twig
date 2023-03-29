@@ -1,15 +1,15 @@
 {% extends "base.html.twig" %}
-{% block title "Historique des logs" %}
+{% block title "Log history" %}
 {% block body %}
 
 <div class="container mt-4">
-    <h2 class="text-center">Historique des logs</h2>
+    <h2 class="text-center">Log history</h2>
     <table class="table table-striped table-hover">
         <thead>
             <tr>
                 <th>Action</th>
-                <th>Auteur</th>
-                <th>Etat</th>
+                <th>Author</th>
+                <th>Status</th>
                 <th>Date</th>
             </tr>
         </thead>
@@ -55,7 +55,7 @@
                 <a class="page-link" href="{{ path('logs_index', { 'page': 1 }) }}"><<</a>
                 </li>
                 <li class="page-item">
-                <a class="page-link" href="{{ path('logs_index', { 'page': page-1 }) }}">Précédent</a>
+                <a class="page-link" href="{{ path('logs_index', { 'page': page-1 }) }}">Previous</a>
                 </li>
             {% endif %}
 
@@ -93,7 +93,7 @@
 
             {% if page < nbPage %}
                 <li class="page-item">
-                <a class="page-link" href="{{ path('logs_index', { 'page': page+1 }) }}">Suivant</a>
+                <a class="page-link" href="{{ path('logs_index', { 'page': page+1 }) }}">Next</a>
                 </li>
                 <li class="page-item">
                 <a class="page-link" href="{{ path('logs_index', { 'page': nbPage }) }}">>></a>

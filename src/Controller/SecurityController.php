@@ -76,7 +76,7 @@ class SecurityController extends AbstractController
             $this->em->persist($user);
             $this->em->flush();
 
-            $this->addFlash('success', 'Votre compte a été mis à jour !');
+            $this->addFlash('success', 'Your account has been updated!');
 
             return $this->redirectToRoute('app_account');
         }

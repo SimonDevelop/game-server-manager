@@ -15,7 +15,7 @@ class GameServerAutocompleteField extends AbstractType
     {
         $resolver->setDefaults([
             'class'        => GameServer::class,
-            'label'        => 'Les droits d\'accès aux serveurs',
+            'label'        => 'Server access',
             'choice_label' => 'name',
             'multiple'     => true,
             'required'     => false

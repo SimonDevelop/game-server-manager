@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Editer un serveur{% endblock %}
+{% block title %}Edit a server{% endblock %}
 
 {% block body %}
 <div class="container mt-4">
-    <h1>Editer un serveur</h1>
+    <h1>Edit a server</h1>
 
     {{ include('server/_form.html.twig') }}
 
-    <a class="btn btn-primary" href="{{ path('server_index') }}">Retour à la liste</a>
+    <a class="btn btn-primary" href="{{ path('server_index') }}">Back to the list</a>
 </div>
 {% endblock %}

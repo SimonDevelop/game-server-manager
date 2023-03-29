@@ -3,7 +3,7 @@
         <div class="col-md-6">
             {{ form_label(form.username, "Username", {'attr': {'class': 'form-label'}}) }}
             {{ form_widget(form.username, {'attr': {'class': 'form-control mb-4'}}) }}
-            {{ form_label(form.roles, "Les accès", {'attr': {'class': 'form-label'}}) }}
+            {{ form_label(form.roles, "Access", {'attr': {'class': 'form-label'}}) }}
             {{ form_widget(form.roles, {'attr': {'class': 'form-control mb-4'}}) }}
         </div>
         <div class="col-md-6">
@@ -17,5 +17,5 @@
     </div>
 
     {{ form_widget(form) }}
-    <button class="btn btn-success mt-3 mb-3">{{ button_label|default('Enregistrer') }}</button>
+    <button class="btn btn-success mt-3 mb-3">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}

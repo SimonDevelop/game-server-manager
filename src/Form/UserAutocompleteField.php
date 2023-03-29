@@ -15,7 +15,7 @@ class UserAutocompleteField extends AbstractType
     {
         $resolver->setDefaults([
             'class'        => User::class,
-            'label'        => 'Les utilisateurs qui ont les accès',
+            'label'        => 'Users who have access',
             'choice_label' => 'username',
             'multiple'     => true,
             'required'     => false
