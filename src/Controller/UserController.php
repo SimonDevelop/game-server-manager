@@ -32,10 +32,10 @@ class UserController extends AbstractController
     }
 
     #[Route(path: '/', name: 'user_index', methods: ['GET'])]
-    public function index(UserRepository $userRepository): Response
+    public function index(): Response
     {
         return $this->render('user/index.html.twig', [
-            'users' => $userRepository->findAll(),
+            'users' => $this->userRepository->findAll(),
         ]);
     }
 
@@ -51,7 +51,7 @@ class UserController extends AbstractController
                 return $this->render('user/new.html.twig', [
                     'user'       => $user,
                     'form'       => $form->createView(),
-                    'error_pass' => "Vous devez saisir un mot de passe."
+                    'error_pass' => "You must enter a password."
                 ]);
             }
             $user->setPassword(

@@ -35,6 +35,10 @@ class SecurityController extends AbstractController
             return $this->redirectToRoute('app_home');
         }
 
+        if (is_int($this->userRepository->countAdmin()) && 0 === $this->userRepository->countAdmin()) {
+            return $this->redirectToRoute('app_setup');
+        }
+
         $error        = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
 
