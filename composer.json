@@ -14,6 +14,7 @@
         "doctrine/orm": "^2.11",
         "phpdocumentor/reflection-docblock": "^5.3",
         "predis/predis": "^2",
+        "runtime/frankenphp-symfony": "^0.1.1",
         "sensio/framework-extra-bundle": "^6.2",
         "symfony/amqp-messenger": "6.2.*",
         "symfony/asset": "6.2.*",
@@ -110,7 +111,11 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "6.2.*"
+            "require": "6.2.*",
+            "docker": false
+        },
+        "runtime": {
+            "class": "Runtime\\FrankenPhpSymfony\\Runtime"
         }
     }
 }
