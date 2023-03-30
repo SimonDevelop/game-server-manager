@@ -43,9 +43,6 @@ class GameServer
     private $path;
 
     #[ORM\Column(type: 'integer')]
-    private $gameType;
-
-    #[ORM\Column(type: 'integer')]
     private $stateType;
 
     #[ORM\ManyToOne(targetEntity: Server::class, cascade: ['persist'])]

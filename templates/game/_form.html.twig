@@ -1,19 +1,21 @@
 {{ form_start(form) }}
     <div class="row mt-4">
         <div class="col-md-6">
-            {{ form_label(form.name, "Nom", {'attr': {'class': 'form-label'}}) }}
+            {{ form_label(form.name, "Name", {'attr': {'class': 'form-label'}}) }}
             {{ form_widget(form.name, {'attr': {'class': 'form-control mb-4'}}) }}
-            {{ form_label(form.server, "Serveur", {'attr': {'class': 'form-label'}}) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_label(form.server, "Server", {'attr': {'class': 'form-label'}}) }}
             {{ form_widget(form.server, {'attr': {'class': 'form-control mb-4'}}) }}
         </div>
         <div class="col-md-12">
-            {{ form_label(form.path, "Chemin absolut", {'attr': {'class': 'form-label'}}) }}
+            {{ form_label(form.path, "Path", {'attr': {'class': 'form-label'}}) }}
             {{ form_widget(form.path, {'attr': {'class': 'form-control mb-4'}}) }}
-            {{ form_label(form.commandStart, "Commande de démarrage", {'attr': {'class': 'form-label'}}) }}
+            {{ form_label(form.commandStart, "Start command", {'attr': {'class': 'form-label'}}) }}
             {{ form_widget(form.commandStart, {'attr': {'class': 'form-control mb-4'}}) }}
-            {{ form_label(form.commandStop, "Commande d'arrêt", {'attr': {'class': 'form-label'}}) }}
+            {{ form_label(form.commandStop, "Stop command", {'attr': {'class': 'form-label'}}) }}
             {{ form_widget(form.commandStop, {'attr': {'class': 'form-control mb-4'}}) }}
-            {{ form_label(form.commandUpdate, "Commande de mise à jour (optionnel)", {'attr': {'class': 'form-label'}}) }}
+            {{ form_label(form.commandUpdate, "Update command (optional)", {'attr': {'class': 'form-label'}}) }}
             {{ form_widget(form.commandUpdate, {'attr': {'class': 'form-control mb-4'}}) }}
         </div>
     </div>
