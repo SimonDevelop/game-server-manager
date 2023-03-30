@@ -19,11 +19,11 @@ class UserType extends AbstractType
             ->add('username')
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
-                'invalid_message' => 'Les 2 mots de passe ne sont pas identiques.',
+                'invalid_message' => 'The password fields do not match.',
                 'options' => ['attr' => ['class' => 'form-control mb-4']],
                 'required' => false,
-                'first_options'  => ['label' => 'Mot de passe'],
-                'second_options' => ['label' => 'Confirmation du mot de passe'],
+                'first_options'  => ['label' => 'Password'],
+                'second_options' => ['label' => 'Confirm password'],
             ])
             ->add('roles', ChoiceType::class, [
                 'required' => true,

@@ -81,7 +81,7 @@ class GameServerController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->persist($game);
             $this->em->flush();
-            $this->addFlash('success', 'Création du serveur de jeu réussi !');
+            $this->addFlash('success', 'Successful creation of the game server!');
 
             return $this->redirectToRoute('game_index');
         }
@@ -101,7 +101,7 @@ class GameServerController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
-            $this->addFlash('success', 'Mise à jour du serveur de jeu réussi !');
+            $this->addFlash('success', 'Game server update successful!');
 
             return $this->redirectToRoute('game_index');
         }
@@ -119,7 +119,7 @@ class GameServerController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$game->getId(), $request->request->get('_token'))) {
             $this->em->remove($game);
             $this->em->flush();
-            $this->addFlash('success', 'Supression du serveur de jeu réussi !');
+            $this->addFlash('success', 'Successful suppression of the game server!');
         }
 
         return $this->redirectToRoute('game_index');
@@ -143,7 +143,7 @@ class GameServerController extends AbstractController
                 'action' => 'Server started',
             ];
 
-            $this->addFlash('success', 'Serveur de jeu en cours de lancement !');
+            $this->addFlash('success', 'Game server being launched!');
             $this->messageBus->dispatch(new SendCommandMessage($game->getId(), $informations, $command));
         }
 
@@ -166,7 +166,30 @@ class GameServerController extends AbstractController
                 'action' => 'Server stopped',
             ];
 
-            $this->addFlash('success', 'Serveur de jeu en cours de clôture !');
+            $this->addFlash('success', 'Game server being closed!');
+            $this->messageBus->dispatch(new SendCommandMessage($game->getId(), $informations, $command));
+        }
+
+        return $this->redirectToRoute('game_index');
+    }
+
+    #[Route(path: '/{id}/update', name: 'game_update', methods: ['POST'])]
+    public function gameUpdate(Request $request, GameServer $game): Response
+    {
+        if ($this->isCsrfTokenValid('update'.$game->getId(), $request->request->get('_token'))) {
+            $game->setStateType(4);
+            $this->em->persist($game);
+            $this->em->flush();
+
+            $path    = $game->getPath();
+            $cmd     = $game->getCommandUpdate();
+            $command = "cd $path && $cmd";
+            $informations = [
+                'user'   => $this->getUser()->getId(),
+                'action' => 'Server Updating',
+            ];
+
+            $this->addFlash('success', 'Game server is being updated!');
             $this->messageBus->dispatch(new SendCommandMessage($game->getId(), $informations, $command));
         }
 
@@ -188,7 +211,7 @@ class GameServerController extends AbstractController
                 'action' => 'Server killed',
             ];
 
-            $this->addFlash('success', 'Serveur de jeu en cours de clôture forcé !');
+            $this->addFlash('success', 'Game server being forced to close!');
             $this->messageBus->dispatch(new SendCommandMessage($game->getId(), $informations, $command));
         }
 
@@ -210,6 +233,23 @@ class GameServerController extends AbstractController
         return $this->render('game/logs.html.twig', [
             'game' => $game,
             'logs' => $logs
+        ]);
+    }
+
+    #[Route(path: '/{id}/logs/clear', name: 'game_logs_clear', methods: ['GET'])]
+    public function gameLogClear(GameServer $game): Response
+    {
+        $connection = $this->connection->getConnection($game->getServer());
+        if (null === $connection) {
+            return $this->redirectToRoute('game_index');
+        }
+
+        $logsPath = $this->gameOperations->getGameServerLog($game);
+        $command  = "echo '' > $logsPath";
+        $this->connection->sendCommand($connection, $command);
+
+        return $this->redirectToRoute('game_logs', [
+            'id' => $game->getId()
         ]);
     }
 }

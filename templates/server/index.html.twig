@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des serveurs{% endblock %}
+{% block title %}Servers list{% endblock %}
 
 {% block body %}
 <div class="container mt-4">
 
-    <h1>Liste des serveurs</h1>
+    <h1>Servers list</h1>
 
     {% for message in app.flashes("success") %}
       <div class="alert alert-success">
@@ -19,18 +19,18 @@
       </div>
     {% endfor %}
 
-    <a class="btn btn-success" href="{{ path('server_new') }}">Ajouté un nouveau server</a>
+    <a class="btn btn-success" href="{{ path('server_new') }}">Added a new server</a>
 
     <table class="table table-striped table-hover">
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Nom du serveur</th>
-                <th>Adresse IP</th>
-                <th>Port</th>
+                <th>Server name</th>
+                <th>IP Address</th>
+                <th>SSH Port</th>
                 <th>Login</th>
-                <th>Date de création</th>
-                <th>actions</th>
+                <th>Date of creation</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -45,10 +45,10 @@
                 <td>
                     <div class="row justify-content-start">
                         <div class="col-auto">
-                            <a class="btn btn-primary" href="{{ path('server_check', {'id': server.id}) }}">Vérifier la connexion</a>
+                            <a class="btn btn-primary" href="{{ path('server_check', {'id': server.id}) }}">Check the SSH connection</a>
                         </div>
                         <div class="col-auto">
-                            <a class="btn btn-warning" href="{{ path('server_edit', {'id': server.id}) }}">Editer</a>
+                            <a class="btn btn-warning" href="{{ path('server_edit', {'id': server.id}) }}">Edit</a>
                         </div>
                         <div class="col-auto">
                             {{ include('server/_delete_form.html.twig') }}
@@ -64,6 +64,6 @@
         </tbody>
     </table>
 
-    <a class="btn btn-success" href="{{ path('server_new') }}">Ajouté un nouveau server</a>
+    <a class="btn btn-success" href="{{ path('server_new') }}">Added a new server</a>
 </div>
 {% endblock %}

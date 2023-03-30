@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[Security("is_granted('ROLE_ADMIN')")]
 #[Route(path: '/user')]
@@ -31,15 +32,15 @@ class UserController extends AbstractController
     }
 
     #[Route(path: '/', name: 'user_index', methods: ['GET'])]
-    public function index(UserRepository $userRepository): Response
+    public function index(): Response
     {
         return $this->render('user/index.html.twig', [
-            'users' => $userRepository->findAll(),
+            'users' => $this->userRepository->findAll(),
         ]);
     }
 
     #[Route(path: '/new', name: 'user_new', methods: ['GET', 'POST'])]
-    public function new(Request $request): Response
+    public function new(Request $request, UserPasswordHasherInterface $userPasswordHasher): Response
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -50,12 +51,18 @@ class UserController extends AbstractController
                 return $this->render('user/new.html.twig', [
                     'user'       => $user,
                     'form'       => $form->createView(),
-                    'error_pass' => "Vous devez saisir un mot de passe."
+                    'error_pass' => "You must enter a password."
                 ]);
             }
+            $user->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $user,
+                    $form->get('password')->getData()
+                )
+            );
             $this->em->persist($user);
             $this->em->flush();
-            $this->addFlash('success', 'Création de l\'utilisateur réussi !');
+            $this->addFlash('success', 'Successful user creation!');
 
             return $this->redirectToRoute('user_index');
         }
@@ -67,14 +74,20 @@ class UserController extends AbstractController
     }
 
     #[Route(path: '/{id}/edit', name: 'user_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user): Response
+    public function edit(Request $request, User $user, UserPasswordHasherInterface $userPasswordHasher): Response
     {
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $user->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $user,
+                    $form->get('password')->getData()
+                )
+            );
             $this->em->flush();
-            $this->addFlash('success', 'Mise à jour de l\'utilisateur réussi !');
+            $this->addFlash('success', 'User update successful!');
 
             return $this->redirectToRoute('user_index');
         }
@@ -91,7 +104,7 @@ class UserController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
             $this->em->remove($user);
             $this->em->flush();
-            $this->addFlash('success', 'Suppression de l\'utilisateur réussi !');
+            $this->addFlash('success', 'User deletion successful!');
         }
 
         return $this->redirectToRoute('user_index');

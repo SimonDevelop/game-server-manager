@@ -73,18 +73,18 @@ class SendCommandHandler
 
         $connection = $this->connection->getConnection($game->getServer());
         if (null === $connection) {
-            $this->logService->addLog($user, $game, $informations['action'], false);
+            $this->logService->addLog($game, $informations['action'], false, $user);
             throw new \Exception('Failed to send command');
         }
 
         $response = $this->connection->sendCommand($connection, $message->getCommand());
         if (false === $response) {
             $this->gameOperations->setStateAfterUpdateFailed($game);
-            $this->logService->addLog($user, $game, $informations['action'], false);
+            $this->logService->addLog($game, $informations['action'], false, $user);
             throw new \Exception('Failed to send command');
         } else {
             $this->gameOperations->setStateAfterUpdate($game);
-            $this->logService->addLog($user, $game, $informations['action']);
+            $this->logService->addLog($game, $informations['action'], true, $user);
         }
     }
 }

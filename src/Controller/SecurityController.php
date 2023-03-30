@@ -35,6 +35,10 @@ class SecurityController extends AbstractController
             return $this->redirectToRoute('app_home');
         }
 
+        if (is_int($this->userRepository->countAdmin()) && 0 === $this->userRepository->countAdmin()) {
+            return $this->redirectToRoute('app_setup');
+        }
+
         $error        = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
 
@@ -76,7 +80,7 @@ class SecurityController extends AbstractController
             $this->em->persist($user);
             $this->em->flush();
 
-            $this->addFlash('success', 'Votre compte a été mis à jour !');
+            $this->addFlash('success', 'Your account has been updated!');
 
             return $this->redirectToRoute('app_account');
         }

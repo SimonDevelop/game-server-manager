@@ -7,7 +7,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\BrowserKit\Request;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
@@ -57,10 +56,10 @@ class HomeController extends AbstractController
         $chart = $chartBuilder->createChart(Chart::TYPE_PIE);
 
         $chart->setData([
-            'labels'   => ['Serveurs On', 'Serveurs Off', 'Autres'],
+            'labels'   => ['Servers On', 'Servers Off', 'Autres'],
             'datasets' => [
                 [
-                    'label'           => 'Les serveurs de jeu',
+                    'label'           => 'Game servers',
                     'backgroundColor' => ['rgb(46, 184, 46)', 'rgb(255, 64, 0)', 'rgb(255, 153, 51)'],
                     'borderColor'     => ['rgb(46, 184, 46)', 'rgb(255, 64, 0)', 'rgb(255, 153, 51)'],
                     'data'            => [$serversOn, $serversOff, $serverOther],

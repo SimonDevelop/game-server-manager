@@ -10,17 +10,19 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 
-class AccountFormType extends AbstractType
+class SetupFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('username')
             ->add('password', RepeatedType::class, [
                 'type'            => PasswordType::class,
                 'invalid_message' => 'The password fields do not match.',
+                'options'         => ['attr' => ['class' => 'form-control mb-4']],
                 'required'        => false,
-                'first_options'   => ['label' => 'New password'],
-                'second_options'  => ['label' => 'Confirm new password'],
+                'first_options'   => ['label' => 'Password'],
+                'second_options'  => ['label' => 'Confirm password'],
                 'constraints'     => [
                     new Length([
                         'min'        => 6,

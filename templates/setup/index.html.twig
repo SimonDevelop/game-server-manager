@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Setup{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="form-account">
+        <h1 class="text-center h3 mb-3 fw-normal">Create my admin account</h1>
+        <div style="margin-top: 20px;">
+            {{ form_start(form) }}
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        {{ form_label(form.username, "Username", {'attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.username, {'attr': {'class': 'form-control mb-4'}}) }}
+                    </div>
+                    <div class="col-md-12">
+                        {% if error_pass is defined %}
+                            <ul>
+                                <li>{{ error_pass }}</li>
+                            </ul>
+                        {% endif %}
+                        {{ form_widget(form.password) }}
+                    </div>
+                </div>
+                {{ form_widget(form) }}
+                <button class="btn btn-success mt-3 mb-3">{{ button_label|default('Save') }}</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}
