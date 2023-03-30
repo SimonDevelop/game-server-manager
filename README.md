@@ -2,7 +2,47 @@
 This web application allows you to control your game servers on multiple machines under Linux. The idea is to give you the means to remotely shutdown, start and update your game servers by sending ssh commands.
 
 # Install with docker
-You have at your disposal a sample file `docker-compose.yaml.dist` to launch the project instantly with docker.
+Here is a docker-compose example (adapt the identifiers of the different containers) :
+```
+version: '3.1'
+
+services:
+  gsm:
+    restart: always
+    image: simondockerise/gsm:1.0.0-beta
+    environment:
+      - APP_ENV=prod
+      - APP_SECRET=!CHangeMe!
+      - PASSWORD_HASH_KEY=!CHangeMe!
+      - IV_HASH=!CHangeMe!
+      - DATABASE_URL=mysql://root:root@mysql:3306/gsm?serverVersion=5.7
+      - MESSENGER_TRANSPORT_DSN=amqp://admin:admin@rabbitmq:5672/%2f/messages
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - mysql
+    ports:
+      - 80:8080
+
+  mysql:
+    restart: always
+    image: mysql:5.7
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=gsm
+
+  redis:
+    image: redis:7
+    restart: always
+
+  rabbitmq:
+    restart: always
+    image: rabbitmq:3-management-alpine
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+```
 
 # Crontab
 You have a cron job to add for the verification of the game servers :
