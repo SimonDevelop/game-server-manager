@@ -9,7 +9,7 @@ version: '3.1'
 services:
   gsm:
     restart: always
-    image: simondockerise/gsm:1.0.0-beta
+    image: simondockerise/gsm:latest
     environment:
       - APP_ENV=prod
       - APP_SECRET=!CHangeMe!
@@ -43,7 +43,12 @@ services:
       - RABBITMQ_DEFAULT_USER=admin
       - RABBITMQ_DEFAULT_PASS=admin
 ```
-
+The project has been designed to run under docker with frankenphp, if you want to use it out of docker, remember to remove the `runtime/frankenphp-symfony` package and this part of the composer.json :
+```
+"runtime": {
+    "class": "Runtime\\FrankenPhpSymfony\\Runtime"
+}
+```
 # Crontab
 You have a cron job to add for the verification of the game servers :
 ```
