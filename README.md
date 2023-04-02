@@ -61,16 +61,3 @@ You can run up to 3 crontab commands to manage updates and restarts of your game
 1 4 * * * docker exec <container_app> php bin/console cron:server:update <id_game_server> --time=120 >/dev/null 2>&1
 3 4 * * * docker exec <container_app> php bin/console cron:server:start <id_game_server> >/dev/null 2>&1
 ```
-
-# Importante note
-It is necessary to install your game servers beforehand and to provide the update scripts (optional).
-
-After installation of your game server, create `server_logs.conf` file config in the folder with content :
-```
-logfile /path/of/gameserver/folder/server.log
-logfile flush 1
-log on
-```
-It is imperative that your log file be named `server.log`.
-
-We hope to manage this part independently in the future.
