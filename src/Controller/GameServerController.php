@@ -82,6 +82,10 @@ class GameServerController extends AbstractController
             $this->em->persist($game);
             $this->em->flush();
             $this->addFlash('success', 'Successful creation of the game server!');
+            $sshResponse = $this->gameOperations->createLogConfig($game);
+            if (false === $sshResponse) {
+                $this->addFlash('danger', 'Log configuration failed!');
+            }
 
             return $this->redirectToRoute('game_index');
         }
@@ -102,6 +106,10 @@ class GameServerController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
             $this->addFlash('success', 'Game server update successful!');
+            $sshResponse = $this->gameOperations->createLogConfig($game);
+            if (false === $sshResponse) {
+                $this->addFlash('danger', 'Log configuration failed!');
+            }
 
             return $this->redirectToRoute('game_index');
         }
@@ -227,7 +235,7 @@ class GameServerController extends AbstractController
         }
 
         $logsPath = $this->gameOperations->getGameServerLog($game);
-        $command  = "cat $logsPath";
+        $command  = "tail --lines=100 $logsPath";
         $logs     = $this->connection->sendCommandWithResponse($connection, $command);
 
         return $this->render('game/logs.html.twig', [
