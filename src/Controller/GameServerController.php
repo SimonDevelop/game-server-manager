@@ -235,7 +235,7 @@ class GameServerController extends AbstractController
         }
 
         $logsPath = $this->gameOperations->getGameServerLog($game);
-        $command  = "cat $logsPath";
+        $command  = "tail --lines=100 $logsPath";
         $logs     = $this->connection->sendCommandWithResponse($connection, $command);
 
         return $this->render('game/logs.html.twig', [
