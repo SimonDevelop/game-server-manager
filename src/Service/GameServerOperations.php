@@ -91,7 +91,7 @@ class GameServerOperations
         $pathLog    = $this->getGameServerLog($game);
         $connection = $this->connection->getConnection($game->getServer());
 
-        $rm                 = "rm $pathConf $pathLog";
+        $rm                 = "rm -rf $pathConf $pathLog";
         $echoConfFirstLine  = "echo 'logfile $pathLog' > $pathConf";
         $echoConfSecondLine = "echo 'logfile flush 1' >> $pathConf";
         $echoConfThreeLine  = "echo 'log on' >> $pathConf";
