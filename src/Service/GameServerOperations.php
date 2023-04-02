@@ -4,14 +4,18 @@ namespace App\Service;
 
 use App\Entity\GameServer;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Service\Connection;
 
 class GameServerOperations
 {
     private EntityManagerInterface $em;
 
-    public function __construct(EntityManagerInterface $em)
+    private Connection $connection;
+
+    public function __construct(EntityManagerInterface $em, Connection $connection)
     {
-        $this->em = $em;
+        $this->em         = $em;
+        $this->connection = $connection;
     }
 
     public function getGameServerNameScreen(GameServer $game): string
@@ -79,5 +83,21 @@ class GameServerOperations
 
         $this->em->persist($game);
         $this->em->flush();
+    }
+    
+    public function createLogConfig(GameServer $game): bool
+    {
+        $pathConf   = $this->getGameServerLogConf($game);
+        $pathLog    = $this->getGameServerLog($game);
+        $connection = $this->connection->getConnection($game->getServer());
+
+        $rm                 = "rm $pathConf $pathLog";
+        $echoConfFirstLine  = "echo 'logfile $pathLog' > $pathConf";
+        $echoConfSecondLine = "echo 'logfile flush 1' >> $pathConf";
+        $echoConfThreeLine  = "echo 'log on' >> $pathConf";
+        $createLogFile      = "touch $pathLog";
+        $cmd                = "$rm && $echoConfFirstLine && $echoConfSecondLine && $echoConfThreeLine && $createLogFile";
+        
+        return $this->connection->sendCommand($connection, $cmd);
     }
 }
