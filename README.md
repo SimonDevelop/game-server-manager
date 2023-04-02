@@ -61,3 +61,6 @@ You can run up to 3 crontab commands to manage updates and restarts of your game
 1 4 * * * docker exec <container_app> php bin/console cron:server:update <id_game_server> --time=120 >/dev/null 2>&1
 3 4 * * * docker exec <container_app> php bin/console cron:server:start <id_game_server> >/dev/null 2>&1
 ```
+
+# Importante note
+It is necessary to install your game server before adding it to GSM.
