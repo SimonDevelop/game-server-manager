@@ -9,7 +9,7 @@ ENV APP_ENV=dev
 # Install supervisor
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    supervisor
+    lsb-release gnupg supervisor
 
 # Install php extensions
 RUN install-php-extensions \
@@ -35,3 +35,5 @@ COPY docker/messenger-worker.conf /etc/supervisor/conf.d/messenger-worker.conf
 WORKDIR /app
 
 ENTRYPOINT ["./docker/docker.sh"]
+
+EXPOSE 8080

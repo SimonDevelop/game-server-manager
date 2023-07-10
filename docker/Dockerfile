@@ -1,7 +1,7 @@
 FROM dunglas/frankenphp:latest
 
 # Environements
-ENV FRANKENPHP_CONFIG="worker ./public/index.php 8"
+ENV FRANKENPHP_CONFIG="worker ./public/index.php"
 ENV APP_RUNTIME="Runtime\FrankenPhpSymfony\Runtime"
 ENV SERVER_NAME=:8080
 ENV APP_ENV=dev
@@ -9,7 +9,7 @@ ENV APP_ENV=dev
 # Install supervisor
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    supervisor
+    lsb-release gnupg supervisor
 
 # Install php extensions
 RUN install-php-extensions \
@@ -49,3 +49,5 @@ RUN rm -rf /app/vendor && \
 WORKDIR /app
 
 ENTRYPOINT ["./docker/docker.sh"]
+
+EXPOSE 8080
