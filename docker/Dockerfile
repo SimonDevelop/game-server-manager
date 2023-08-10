@@ -5,11 +5,13 @@ ENV FRANKENPHP_CONFIG="worker ./public/index.php"
 ENV APP_RUNTIME="Runtime\FrankenPhpSymfony\Runtime"
 ENV SERVER_NAME=:8080
 ENV APP_ENV=dev
+ENV TZ=Europe/Paris
 
-# Install supervisor
+# Install supervisor and cron
 RUN apt-get update && \
+    apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
-    lsb-release gnupg supervisor
+    lsb-release gnupg supervisor cron systemd default-mysql-client libpq-dev
 
 # Install php extensions
 RUN install-php-extensions \
@@ -34,6 +36,14 @@ COPY . /app
 
 # Move supervisor config
 RUN mv /app/docker/messenger-worker.conf /etc/supervisor/conf.d/messenger-worker.conf
+
+# Configure cron
+RUN systemctl enable cron
+RUN (crontab -l; echo "#!/bin/bash") | crontab
+RUN (crontab -l; echo "BASH_ENV=/etc/environment") | crontab
+RUN (crontab -l; echo "PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin") | crontab
+RUN (crontab -l; echo "*/5 * * * * php /app/bin/console cron:server:check >> /var/log/cron.log 2>&1") | crontab
+RUN touch /var/log/cron.log
 
 # Run commands for image app
 RUN rm -rf /app/vendor && \

@@ -1,13 +1,21 @@
 #!/bin/bash
-sleep 10
+sleep 5
+
+# Set TimeZone
+ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 # Clear cache and update database
 php bin/console c:c
 php bin/console d:s:u --force --no-interaction
 
-# Start the first process
+# Start cron
+env >> /etc/environment
+cron -f -l 2 &
+
+# Start frankenphp
 frankenphp run --config /etc/Caddyfile &
 
-# Start the second process
+# Start supervisord
 /usr/bin/supervisord &
   
 # Wait for any process to exit
