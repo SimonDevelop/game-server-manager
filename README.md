@@ -19,6 +19,7 @@ services:
       - MESSENGER_TRANSPORT_DSN=amqp://admin:admin@rabbitmq:5672/%2f/messages
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      - TZ=Europe/Paris
     depends_on:
       - mysql
     ports:
@@ -50,16 +51,13 @@ The project has been designed to run under docker with frankenphp, if you want t
 }
 ```
 # Crontab
-You have a cron job to add for the verification of the game servers :
-```
-*/5 * * * * docker exec <container_app> php bin/console cron:server:check >/dev/null 2>&1
-```
+You have a cron job for game server verification that runs every 5 minutes directly in the container.
 
 You can run up to 3 crontab commands to manage updates and restarts of your game servers when you want:
 ```
-0 4 * * * docker exec <container_app> php bin/console cron:server:stop <id_game_server> >/dev/null 2>&1
-1 4 * * * docker exec <container_app> php bin/console cron:server:update <id_game_server> --time=120 >/dev/null 2>&1
-3 4 * * * docker exec <container_app> php bin/console cron:server:start <id_game_server> >/dev/null 2>&1
+0 4 * * * docker exec <container_app> php bin/console cron:server:stop <id_game_server> >> /var/log/cron.log 2>&1
+1 4 * * * docker exec <container_app> php bin/console cron:server:update <id_game_server> --time=120 >> /var/log/cron.log 2>&1
+3 4 * * * docker exec <container_app> php bin/console cron:server:start <id_game_server> >> /var/log/cron.log 2>&1
 ```
 
 # Importante note
