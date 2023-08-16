@@ -1,4 +1,4 @@
-FROM dunglas/frankenphp:latest
+FROM dunglas/frankenphp:latest-php8.2
 
 # Environements
 ENV FRANKENPHP_CONFIG="worker ./public/index.php"
