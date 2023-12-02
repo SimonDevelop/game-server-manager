@@ -3,7 +3,6 @@ FROM dunglas/frankenphp:latest-php8.2
 # Environements
 ENV FRANKENPHP_CONFIG="worker ./public/index.php"
 ENV APP_RUNTIME="Runtime\FrankenPhpSymfony\Runtime"
-ENV SERVER_NAME=:8080
 ENV APP_ENV=dev
 ENV TZ=Europe/Paris
 
