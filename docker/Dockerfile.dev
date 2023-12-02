@@ -1,9 +1,8 @@
-FROM dunglas/frankenphp:latest
+FROM dunglas/frankenphp:latest-php8.2
 
 # Environements
 ENV FRANKENPHP_CONFIG="worker ./public/index.php"
 ENV APP_RUNTIME="Runtime\FrankenPhpSymfony\Runtime"
-ENV SERVER_NAME=:8080
 ENV APP_ENV=dev
 ENV TZ=Europe/Paris
 
@@ -18,9 +17,7 @@ RUN install-php-extensions \
     pdo_mysql \
     gd \
     intl \
-    zip \
-    amqp \
-    redis
+    zip
 
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
@@ -33,6 +30,9 @@ RUN apt-get update && apt-get install nodejs -y && npm i -g yarn
 
 # Copy supervisor config
 COPY docker/messenger-worker.conf /etc/supervisor/conf.d/messenger-worker.conf
+
+# Copy CaddyFile
+COPY docker/Caddyfile /etc/caddy/Caddyfile
 
 # Configure cron
 RUN systemctl enable cron

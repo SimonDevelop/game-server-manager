@@ -13,7 +13,7 @@ env >> /etc/environment
 cron -f -l 2 &
 
 # Start frankenphp
-frankenphp run --config /etc/Caddyfile &
+frankenphp run --config /etc/caddy/Caddyfile &
 
 # Start supervisord
 /usr/bin/supervisord &

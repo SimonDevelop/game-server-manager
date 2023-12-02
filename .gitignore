@@ -1,3 +1,4 @@
+.idea/*
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
@@ -27,5 +28,6 @@ yarn-error.log
 
 ###> docker-compose-dev ###
 docker-compose.yaml
+docker-compose.yml
 docker/mysql/
 ###< docker-compose-dev ###

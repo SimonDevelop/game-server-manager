@@ -1,9 +1,8 @@
-FROM dunglas/frankenphp:latest
+FROM dunglas/frankenphp:latest-php8.2
 
 # Environements
 ENV FRANKENPHP_CONFIG="worker ./public/index.php"
 ENV APP_RUNTIME="Runtime\FrankenPhpSymfony\Runtime"
-ENV SERVER_NAME=:8080
 ENV APP_ENV=dev
 ENV TZ=Europe/Paris
 
@@ -18,9 +17,7 @@ RUN install-php-extensions \
     pdo_mysql \
     gd \
     intl \
-    zip \
-    amqp \
-    redis
+    zip
 
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
@@ -36,6 +33,10 @@ COPY . /app
 
 # Move supervisor config
 RUN mv /app/docker/messenger-worker.conf /etc/supervisor/conf.d/messenger-worker.conf
+
+# Move config files
+RUN mv /app/docker/Caddyfile /etc/caddy/Caddyfile
+RUN mv /app/docker/app.ini /usr/local/etc/php/conf.d/app.ini
 
 # Configure cron
 RUN systemctl enable cron
@@ -53,7 +54,7 @@ RUN rm -rf /app/vendor && \
     chown -R 1000:1000 /app && \
     chmod -R 777 /app/var && \
     cd /app && \
-    composer install --ignore-platform-req=php && \
+    composer install --ignore-platform-reqs && \
     yarn && yarn encore prod
     
 WORKDIR /app

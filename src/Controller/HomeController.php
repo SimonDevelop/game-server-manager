@@ -6,11 +6,11 @@ use App\Repository\LogRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
-#[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")]
+#[IsGranted("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')")]
 class HomeController extends AbstractController
 {
     #@var GameServerRepository

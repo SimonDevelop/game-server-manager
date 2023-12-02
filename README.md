@@ -16,9 +16,6 @@ services:
       - PASSWORD_HASH_KEY=!CHangeMe!
       - IV_HASH=!CHangeMe!
       - DATABASE_URL=mysql://root:root@mysql:3306/gsm?serverVersion=5.7
-      - MESSENGER_TRANSPORT_DSN=amqp://admin:admin@rabbitmq:5672/%2f/messages
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
       - TZ=Europe/Paris
     depends_on:
       - mysql
@@ -32,17 +29,6 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=gsm
-
-  redis:
-    image: redis:7
-    restart: always
-
-  rabbitmq:
-    restart: always
-    image: rabbitmq:3-management-alpine
-    environment:
-      - RABBITMQ_DEFAULT_USER=admin
-      - RABBITMQ_DEFAULT_PASS=admin
 ```
 The project has been designed to run under docker with frankenphp, if you want to use it out of docker, remember to remove the `runtime/frankenphp-symfony` package and this part of the composer.json :
 ```

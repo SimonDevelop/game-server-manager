@@ -6,15 +6,15 @@ services:
       context: ./
       dockerfile: ./docker/Dockerfile.dev
     environment:
+      - APP_ENV=dev
       - APP_SECRET=69464a803874924422b85ea092c89ff8
       - PASSWORD_HASH_KEY=flG6fEF1dFHJ9pql
       - IV_HASH=qmd0gFzAR6mwGc2m
       - DATABASE_URL=mysql://root:root@mysql:3306/gsm?serverVersion=5.7
-      - MESSENGER_TRANSPORT_DSN=amqp://admin:admin@rabbitmq:5672/%2f/messages
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
     volumes:
       - $PWD:/app
+      - $PWD/docker/Caddyfile:/etc/caddy/Caddyfile:ro
+      - $PWD/docker/app.ini:/usr/local/etc/php/conf.d/app.dev.ini:ro
     depends_on:
       - mysql
     ports:
@@ -29,14 +29,3 @@ services:
       - MYSQL_DATABASE=gsm
     volumes:
       - $PWD/docker/mysql:/var/lib/mysql
-
-  redis:
-    image: redis:7
-    restart: always
-
-  rabbitmq:
-    restart: always
-    image: rabbitmq:3-management-alpine
-    environment:
-      - RABBITMQ_DEFAULT_USER=admin
-      - RABBITMQ_DEFAULT_PASS=admin
