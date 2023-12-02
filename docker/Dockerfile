@@ -35,6 +35,10 @@ COPY . /app
 # Move supervisor config
 RUN mv /app/docker/messenger-worker.conf /etc/supervisor/conf.d/messenger-worker.conf
 
+# Move config files
+RUN mv /app/docker/Caddyfile /etc/caddy/Caddyfile
+RUN mv /app/docker/app.ini /usr/local/etc/php/conf.d/app.ini
+
 # Configure cron
 RUN systemctl enable cron
 RUN (crontab -l; echo "#!/bin/bash") | crontab

@@ -32,6 +32,9 @@ RUN apt-get update && apt-get install nodejs -y && npm i -g yarn
 # Copy supervisor config
 COPY docker/messenger-worker.conf /etc/supervisor/conf.d/messenger-worker.conf
 
+# Copy CaddyFile
+COPY docker/Caddyfile /etc/caddy/Caddyfile
+
 # Configure cron
 RUN systemctl enable cron
 RUN (crontab -l; echo "#!/bin/bash") | crontab
