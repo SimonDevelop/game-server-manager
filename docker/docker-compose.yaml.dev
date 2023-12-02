@@ -6,12 +6,15 @@ services:
       context: ./
       dockerfile: ./docker/Dockerfile.dev
     environment:
+      - APP_ENV=dev
       - APP_SECRET=69464a803874924422b85ea092c89ff8
       - PASSWORD_HASH_KEY=flG6fEF1dFHJ9pql
       - IV_HASH=qmd0gFzAR6mwGc2m
       - DATABASE_URL=mysql://root:root@mysql:3306/gsm?serverVersion=5.7
     volumes:
       - $PWD:/app
+      - $PWD/docker/Caddyfile:/etc/caddy/Caddyfile:ro
+      - $PWD/docker/app.ini:/usr/local/etc/php/conf.d/app.dev.ini:ro
     depends_on:
       - mysql
     ports:
