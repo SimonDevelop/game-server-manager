@@ -18,8 +18,7 @@ RUN install-php-extensions \
     pdo_mysql \
     gd \
     intl \
-    zip \
-    amqp
+    zip
 
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer

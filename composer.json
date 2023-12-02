@@ -15,7 +15,6 @@
         "phpdocumentor/reflection-docblock": "^5.3",
         "runtime/frankenphp-symfony": "^0.1.1",
         "sensio/framework-extra-bundle": "^6.2",
-        "symfony/amqp-messenger": "6.2.*",
         "symfony/asset": "6.2.*",
         "symfony/console": "6.2.*",
         "symfony/dotenv": "6.2.*",
