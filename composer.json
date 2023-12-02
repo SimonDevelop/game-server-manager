@@ -13,7 +13,6 @@
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.11",
         "phpdocumentor/reflection-docblock": "^5.3",
-        "predis/predis": "^2",
         "runtime/frankenphp-symfony": "^0.1.1",
         "sensio/framework-extra-bundle": "^6.2",
         "symfony/amqp-messenger": "6.2.*",

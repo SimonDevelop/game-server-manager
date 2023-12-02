@@ -17,8 +17,6 @@ services:
       - IV_HASH=!CHangeMe!
       - DATABASE_URL=mysql://root:root@mysql:3306/gsm?serverVersion=5.7
       - MESSENGER_TRANSPORT_DSN=amqp://admin:admin@rabbitmq:5672/%2f/messages
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
       - TZ=Europe/Paris
     depends_on:
       - mysql
@@ -32,10 +30,6 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=gsm
-
-  redis:
-    image: redis:7
-    restart: always
 
   rabbitmq:
     restart: always

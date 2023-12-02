@@ -19,8 +19,7 @@ RUN install-php-extensions \
     gd \
     intl \
     zip \
-    amqp \
-    redis
+    amqp
 
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
@@ -53,7 +52,7 @@ RUN rm -rf /app/vendor && \
     chown -R 1000:1000 /app && \
     chmod -R 777 /app/var && \
     cd /app && \
-    composer install --ignore-platform-req=php && \
+    composer install --ignore-platform-reqs && \
     yarn && yarn encore prod
     
 WORKDIR /app
