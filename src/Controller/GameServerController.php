@@ -228,18 +228,20 @@ class GameServerController extends AbstractController
             $cmd  = $request->getPayload()->get('cmd');
             $name = $this->gameOperations->getGameServerNameScreen($game);
             $command = "screen -S $name -X stuff \"$cmd\"`echo -ne '\015'`";
-            $informations = [
-                'user'   => $this->getUser()->getId(),
-                'action' => 'Send command on game server',
-            ];
+            $connection = $this->connection->getConnection($game->getServer());
+            if (null === $connection) {
+                return $this->redirectToRoute('game_index');
+            }
 
+            $this->connection->sendCommand($connection, $command);
             $this->addFlash('success', 'Command sended!');
-            $this->messageBus->dispatch(new SendCommandMessage($game->getId(), $informations, $command));
         } catch (\Exception $exception) {
             $this->logger->error($exception->getMessage());
         }
 
-        return $this->redirectToRoute('game_logs', ['id', $game->getId()]);
+        return $this->redirectToRoute('game_logs', [
+            'id' => $game->getId()
+        ]);
     }
 
     #[Route(path: '/{id}/logs/clear', name: 'game_logs_clear', methods: ['GET'])]
