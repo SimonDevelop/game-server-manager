@@ -14,18 +14,10 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class SetupController extends AbstractController
 {
-    #@var UserRepository
-    private $userRepository;
-
-    #@var EntityManagerInterface
-    private $em;
-
-    #@param UserRepository
-    #@param EntityManagerInterface
-    public function __construct(UserRepository $userRepository, EntityManagerInterface $em)
-    {
-        $this->userRepository   = $userRepository;
-        $this->em               = $em;
+    public function __construct(
+        private readonly UserRepository $userRepository,
+        private readonly EntityManagerInterface $em
+    ) {
     }
 
     #[Route(path: '/setup', name: 'app_setup', methods: ['GET', 'POST'])]
