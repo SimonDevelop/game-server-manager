@@ -18,25 +18,18 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route(path: '/server')]
 class ServerController extends AbstractController
 {
-    #@var ServerRepository
-    private $serverRepository;
-
-    #@var EntityManagerInterface
-    private $em;
-
-    #@param ServerRepository
-    #@param EntityManagerInterface
-    public function __construct(ServerRepository $serverRepository, EntityManagerInterface $em)
-    {
-        $this->serverRepository   = $serverRepository;
-        $this->em                 = $em;
+    public function __construct(
+        private readonly ServerRepository $serverRepository,
+        private readonly EntityManagerInterface $em,
+        private readonly Connection $connection
+    ) {
     }
 
     #[Route(path: '/', name: 'server_index', methods: ['GET'])]
-    public function index(ServerRepository $serverRepository): Response
+    public function index(): Response
     {
         return $this->render('server/index.html.twig', [
-            'servers' => $serverRepository->findAll(),
+            'servers' => $this->serverRepository->findAll(),
         ]);
     }
 
@@ -100,9 +93,9 @@ class ServerController extends AbstractController
     }
 
     #[Route(path: '/{id}/check', name: 'server_check', methods: ['GET'])]
-    public function checkConnect(Server $server, Connection $connexion): Response
+    public function checkConnect(Server $server): Response
     {
-        if (null !== $connexion->getConnection($server)) {
+        if (null !== $this->connection->getConnection($server)) {
             $this->addFlash('success', 'Authentication successful!');
         } else {
             $this->addFlash('danger', 'Authentication failed!');

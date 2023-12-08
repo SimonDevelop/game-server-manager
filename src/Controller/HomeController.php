@@ -14,18 +14,10 @@ use Symfony\UX\Chartjs\Model\Chart;
 #[IsGranted(new Expression('is_granted("ROLE_ADMIN") or is_granted("ROLE_USER")'))]
 class HomeController extends AbstractController
 {
-    #@var GameServerRepository
-    private $gameServerRepository;
-
-    #@var LogRepository
-    private $logRepository;
-
-    #@param GameServerRepository
-    #@param LogRepository
-    public function __construct(GameServerRepository $gameServerRepository, LogRepository $logRepository)
-    {
-        $this->gameServerRepository = $gameServerRepository;
-        $this->logRepository        = $logRepository;
+    public function __construct(
+        private readonly GameServerRepository $gameServerRepository,
+        private readonly LogRepository $logRepository
+    ) {
     }
         
     #[Route(path: '/', name: 'app_home')]

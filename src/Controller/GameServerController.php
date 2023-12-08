@@ -9,6 +9,7 @@ use App\Repository\GameServerRepository;
 use App\Service\Connection;
 use App\Service\GameServerOperations;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,39 +22,14 @@ use Symfony\Component\Messenger\MessageBusInterface;
 #[Route(path: '/game')]
 class GameServerController extends AbstractController
 {
-    #@var GameServerRepository
-    private $gameServerRepository;
-
-    #@var GameServerOperations
-    private $gameOperations;
-
-    #@var EntityManagerInterface
-    private $em;
-
-    #@var MessageBusInterface
-    private $messageBus;
-
-    #@var Connection
-    private $connection;
-
-    #@param GameServerRepository
-    #@param GameServerOperations
-    #@param EntityManagerInterface
-    #@param MessageBusInterface
-    #@param Connection
     public function __construct(
-        GameServerRepository $gameServerRepository,
-        GameServerOperations $gameOperations,
-        EntityManagerInterface $em,
-        MessageBusInterface $messageBus,
-        Connection $connection
-    )
-    {
-        $this->gameServerRepository = $gameServerRepository;
-        $this->gameOperations       = $gameOperations;
-        $this->em                   = $em;
-        $this->messageBus           = $messageBus;
-        $this->connection           = $connection;   
+        private readonly GameServerRepository $gameServerRepository,
+        private readonly GameServerOperations $gameOperations,
+        private readonly EntityManagerInterface $em,
+        private readonly MessageBusInterface $messageBus,
+        private readonly Connection $connection,
+        private readonly LoggerInterface $logger
+    ){
     }
 
     #[Route(path: '/', name: 'game_index', methods: ['GET'])]
@@ -243,6 +219,27 @@ class GameServerController extends AbstractController
             'game' => $game,
             'logs' => $logs
         ]);
+    }
+
+    #[Route(path: '/{id}/cmd', name: 'game_cmd', methods: ['POST'])]
+    public function gameCmd(GameServer $game, Request $request): Response
+    {
+        try {
+            $cmd  = $request->getPayload()->get('cmd');
+            $name = $this->gameOperations->getGameServerNameScreen($game);
+            $command = "screen -S $name -X stuff \"$cmd\"`echo -ne '\015'`";
+            $informations = [
+                'user'   => $this->getUser()->getId(),
+                'action' => 'Send command on game server',
+            ];
+
+            $this->addFlash('success', 'Command sended!');
+            $this->messageBus->dispatch(new SendCommandMessage($game->getId(), $informations, $command));
+        } catch (\Exception $exception) {
+            $this->logger->error($exception->getMessage());
+        }
+
+        return $this->redirectToRoute('game_logs', ['id', $game->getId()]);
     }
 
     #[Route(path: '/{id}/logs/clear', name: 'game_logs_clear', methods: ['GET'])]

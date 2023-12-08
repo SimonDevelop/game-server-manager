@@ -5,7 +5,15 @@
 {% block body %}
 <div class="container mt-4">
     <h1>Logs {{ game.name }}</h1>
-    <textarea class="form-control" id="textarea" rows="28" wrap="off" readonly>{{ logs }}</textarea>
+    <textarea class="form-control mb-3" id="textarea" rows="28" wrap="off" readonly>{{ logs }}</textarea>
+
+    <form action="{{ path('game_cmd', { 'id': game.id }) }}" method="post">
+        <div class="input-group mb-3">
+            <input type="text" name="cmd" class="form-control" placeholder="Command line..." aria-label="Command line..." aria-describedby="button-addon">
+            <button class="btn btn-outline-success" type="submit" id="button-addon">Envoyer</button>
+        </div>
+    </form>
+
     <a class="btn btn-primary" href="{{ path('game_index') }}">Back to the list</a>
     <a class="btn btn-danger" href="{{ path('game_logs_clear', { 'id': game.id }) }}">Empty the logs</a>
 </div>

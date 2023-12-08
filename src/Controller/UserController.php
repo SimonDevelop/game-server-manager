@@ -18,18 +18,11 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 #[Route(path: '/user')]
 class UserController extends AbstractController
 {
-    #@var UserRepository
-    private $userRepository;
-
-    #@var EntityManagerInterface
-    private $em;
-
-    #@param UserRepository
-    #@param EntityManagerInterface
-    public function __construct(UserRepository $userRepository, EntityManagerInterface $em)
-    {
-        $this->userRepository   = $userRepository;
-        $this->em               = $em;
+    public function __construct(
+        private readonly UserRepository $userRepository,
+        private readonly EntityManagerInterface $em,
+        private readonly UserPasswordHasherInterface $userPasswordHasher
+    ) {
     }
 
     #[Route(path: '/', name: 'user_index', methods: ['GET'])]
@@ -41,7 +34,7 @@ class UserController extends AbstractController
     }
 
     #[Route(path: '/new', name: 'user_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, UserPasswordHasherInterface $userPasswordHasher): Response
+    public function new(Request $request): Response
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -56,7 +49,7 @@ class UserController extends AbstractController
                 ]);
             }
             $user->setPassword(
-                $userPasswordHasher->hashPassword(
+                $this->userPasswordHasher->hashPassword(
                     $user,
                     $form->get('password')->getData()
                 )
@@ -75,14 +68,14 @@ class UserController extends AbstractController
     }
 
     #[Route(path: '/{id}/edit', name: 'user_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user, UserPasswordHasherInterface $userPasswordHasher): Response
+    public function edit(Request $request, User $user): Response
     {
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user->setPassword(
-                $userPasswordHasher->hashPassword(
+                $this->userPasswordHasher->hashPassword(
                     $user,
                     $form->get('password')->getData()
                 )

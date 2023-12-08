@@ -13,8 +13,6 @@ services:
       - DATABASE_URL=mysql://root:root@mysql:3306/gsm?serverVersion=5.7
     volumes:
       - $PWD:/app
-      - $PWD/docker/Caddyfile:/etc/caddy/Caddyfile:ro
-      - $PWD/docker/app.ini:/usr/local/etc/php/conf.d/app.dev.ini:ro
     depends_on:
       - mysql
     ports:
