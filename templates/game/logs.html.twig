@@ -5,6 +5,19 @@
 {% block body %}
 <div class="container mt-4">
     <h1>Logs {{ game.name }}</h1>
+
+    {% for message in app.flashes("success") %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% for message in app.flashes("danger") %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+    {% endfor %}
+
     <textarea class="form-control mb-3" id="textarea" rows="28" wrap="off" readonly>{{ logs }}</textarea>
 
     <form action="{{ path('game_cmd', { 'id': game.id }) }}" method="post">

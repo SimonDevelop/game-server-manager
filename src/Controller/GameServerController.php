@@ -237,6 +237,7 @@ class GameServerController extends AbstractController
             $this->addFlash('success', 'Command sended!');
         } catch (\Exception $exception) {
             $this->logger->error($exception->getMessage());
+            $this->addFlash('danger', 'Command send failed!');
         }
 
         return $this->redirectToRoute('game_logs', [
