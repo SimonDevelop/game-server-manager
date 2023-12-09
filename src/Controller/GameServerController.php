@@ -224,20 +224,22 @@ class GameServerController extends AbstractController
     #[Route(path: '/{id}/cmd', name: 'game_cmd', methods: ['POST'])]
     public function gameCmd(GameServer $game, Request $request): Response
     {
-        try {
-            $cmd  = $request->getPayload()->get('cmd');
-            $name = $this->gameOperations->getGameServerNameScreen($game);
-            $command = "screen -S $name -X stuff \"$cmd\"`echo -ne '\015'`";
-            $connection = $this->connection->getConnection($game->getServer());
-            if (null === $connection) {
-                return $this->redirectToRoute('game_index');
-            }
+        if ($this->isCsrfTokenValid('cmd'.$game->getId(), $request->request->get('_token'))) {
+            try {
+                $cmd  = $request->getPayload()->get('cmd');
+                $name = $this->gameOperations->getGameServerNameScreen($game);
+                $command = "screen -S $name -X stuff \"$cmd\"`echo -ne '\015'`";
+                $connection = $this->connection->getConnection($game->getServer());
+                if (null === $connection) {
+                    return $this->redirectToRoute('game_index');
+                }
 
-            $this->connection->sendCommand($connection, $command);
-            $this->addFlash('success', 'Command sended!');
-        } catch (\Exception $exception) {
-            $this->logger->error($exception->getMessage());
-            $this->addFlash('danger', 'Command send failed!');
+                $this->connection->sendCommand($connection, $command);
+                $this->addFlash('success', 'Command sended!');
+            } catch (\Exception $exception) {
+                $this->logger->error($exception->getMessage());
+                $this->addFlash('danger', 'Command send failed!');
+            }
         }
 
         return $this->redirectToRoute('game_logs', [
