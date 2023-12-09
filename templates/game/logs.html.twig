@@ -5,12 +5,26 @@
 {% block body %}
 <div class="container mt-4">
     <h1>Logs {{ game.name }}</h1>
+
+    {% for message in app.flashes("success") %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% for message in app.flashes("danger") %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+    {% endfor %}
+
     <textarea class="form-control mb-3" id="textarea" rows="28" wrap="off" readonly>{{ logs }}</textarea>
 
     <form action="{{ path('game_cmd', { 'id': game.id }) }}" method="post">
+        <input type="hidden" name="_token" value="{{ csrf_token('cmd' ~ game.id) }}">
         <div class="input-group mb-3">
             <input type="text" name="cmd" class="form-control" placeholder="Command line..." aria-label="Command line..." aria-describedby="button-addon">
-            <button class="btn btn-outline-success" type="submit" id="button-addon">Envoyer</button>
+            <button class="btn btn-outline-success" type="submit" id="button-addon">Send</button>
         </div>
     </form>
 

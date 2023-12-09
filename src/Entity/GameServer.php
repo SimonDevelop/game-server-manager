@@ -58,12 +58,16 @@ class GameServer
     #[ORM\OneToMany(mappedBy: 'gameServer', targetEntity: Log::class)]
     private Collection $logs;
 
+    #[ORM\OneToMany(mappedBy: 'gameServer', targetEntity: Cronjob::class)]
+    private Collection $cronjobs;
+
     public function __construct()
     {
         $this->stateType = 0;
         $this->createdAt = new DateTimeImmutable();
         $this->users     = new ArrayCollection();
-        $this->logs = new ArrayCollection();
+        $this->logs      = new ArrayCollection();
+        $this->cronjobs  = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -223,6 +227,36 @@ class GameServer
             // set the owning side to null (unless already changed)
             if ($log->getGameServer() === $this) {
                 $log->setGameServer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Cronjob>
+     */
+    public function getCronjobs(): Collection
+    {
+        return $this->cronjobs;
+    }
+
+    public function addCronjob(Cronjob $cronjob): self
+    {
+        if (!$this->cronjobs->contains($cronjob)) {
+            $this->cronjobs->add($cronjob);
+            $cronjob->setGameServer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCronjob(Cronjob $cronjob): self
+    {
+        if ($this->cronjobs->removeElement($cronjob)) {
+            // set the owning side to null (unless already changed)
+            if ($cronjob->getGameServer() === $this) {
+                $cronjob->setGameServer(null);
             }
         }
 

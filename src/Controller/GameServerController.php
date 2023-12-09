@@ -2,9 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Cronjob;
 use App\Entity\GameServer;
+use App\Form\CronType;
 use App\Form\GameServerType;
 use App\Message\SendCommandMessage;
+use App\Repository\CronjobRepository;
 use App\Repository\GameServerRepository;
 use App\Service\Connection;
 use App\Service\GameServerOperations;
@@ -17,6 +20,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Messenger\MessageBusInterface;
+use TiBeN\CrontabManager\CrontabAdapter;
+use TiBeN\CrontabManager\CrontabJob;
+use TiBeN\CrontabManager\CrontabRepository;
 
 #[IsGranted(new Expression('is_granted("ROLE_ADMIN") or is_granted("ROLE_USER")'))]
 #[Route(path: '/game')]
@@ -28,7 +34,8 @@ class GameServerController extends AbstractController
         private readonly EntityManagerInterface $em,
         private readonly MessageBusInterface $messageBus,
         private readonly Connection $connection,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly CronjobRepository $cronjobRepository
     ){
     }
 
@@ -108,6 +115,95 @@ class GameServerController extends AbstractController
         }
 
         return $this->redirectToRoute('game_index');
+    }
+
+    #[Security("is_granted('ROLE_ADMIN')")]
+    #[Route(path: '/{id}/cron', name: 'game_crons', methods: ['GET', 'POST'])]
+    public function cron(Request $request, GameServer $game): Response
+    {
+        $crontabRepository = new CrontabRepository(new CrontabAdapter());
+        $name              = $this->gameOperations->getGameServerNameScreen($game);
+        $id                = $game->getId();
+        $crons             = [
+            "start" => $crontabRepository->findJobByRegex("/".$name."_start_/"),
+            "stop" => $crontabRepository->findJobByRegex("/".$name."_stop_/"),
+            "update" => $crontabRepository->findJobByRegex("/".$name."_update_/")
+        ];
+
+        $form = $this->createForm(CronType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $datas       = $request->getPayload()->all();
+            $action      = $datas['cron']['command'];
+            $periodicity = $datas['cron']['periodicity'];
+
+            $time = '';
+            if ("update" === $action) {
+                $time = '--time=120 ';
+            }
+
+            $crontabJob = CrontabJob::createFromCrontabLine("$periodicity php /app/bin/console cron:server:$action $id $time>> /var/log/cron.log 2>&1");
+            $crontabJob->setComments($name."_".$action."_".(count($crons[$action])+1));
+
+            if (isset($crontabJob)) {
+                $crontabRepository->addJob($crontabJob);
+                $crontabRepository->persist();
+                $cronjobEntity = new Cronjob();
+                $cronjobEntity->setType($action);
+                $cronjobEntity->setPeriodicity($periodicity);
+                $cronjobEntity->setComment($crontabJob->getComments());
+                $cronjobEntity->setGameServer($game);
+                $this->em->persist($cronjobEntity);
+                $this->em->flush();
+
+                $this->addFlash('success', 'Cronjob created with successful!');
+            } else {
+                $this->addFlash('danger', 'Cronjob created failed!');
+            }
+
+            return $this->redirectToRoute('game_crons', [
+                'id' => $id
+            ]);
+        }
+
+        return $this->render('game/crons.html.twig', [
+            'game' => $game,
+            'form' => $form->createView(),
+            'crons' => $crons
+        ]);
+    }
+
+    #[Security("is_granted('ROLE_ADMIN')")]
+    #[Route(path: '/{id}/cron/delete', name: 'game_cron_delete', methods: ['POST'])]
+    public function cronDelete(Request $request, GameServer $game): Response
+    {
+        if ($this->isCsrfTokenValid('cron'.$game->getId(), $request->request->get('_token'))) {
+            try {
+                $cronjob = $request->getPayload()->get('cronjob');
+                $crontabRepository = new CrontabRepository(new CrontabAdapter());
+                $crontabJob = $crontabRepository->findJobByRegex("/$cronjob/");
+                $crontabRepository->removeJob($crontabJob[0]);
+                $crontabRepository->persist();
+                $cronjobEntity = $this->cronjobRepository->findOneBy([
+                    'comment' => $cronjob
+                ]);
+
+                if (null !== $cronjobEntity) {
+                    $this->em->remove($cronjobEntity);
+                    $this->em->flush();
+                }
+
+                $this->addFlash('success', 'The cronjob has been deleted!');
+            } catch (\Exception $exception) {
+                $this->logger->error($exception->getMessage());
+                $this->addFlash('danger', 'The cronjob could not be deleted!');
+            }
+        }
+
+        return $this->redirectToRoute('game_crons', [
+            'id' => $game->getId()
+        ]);
     }
 
     #[Route(path: '/{id}/on', name: 'game_on', methods: ['POST'])]
@@ -224,19 +320,22 @@ class GameServerController extends AbstractController
     #[Route(path: '/{id}/cmd', name: 'game_cmd', methods: ['POST'])]
     public function gameCmd(GameServer $game, Request $request): Response
     {
-        try {
-            $cmd  = $request->getPayload()->get('cmd');
-            $name = $this->gameOperations->getGameServerNameScreen($game);
-            $command = "screen -S $name -X stuff \"$cmd\"`echo -ne '\015'`";
-            $connection = $this->connection->getConnection($game->getServer());
-            if (null === $connection) {
-                return $this->redirectToRoute('game_index');
-            }
+        if ($this->isCsrfTokenValid('cmd'.$game->getId(), $request->request->get('_token'))) {
+            try {
+                $cmd  = $request->getPayload()->get('cmd');
+                $name = $this->gameOperations->getGameServerNameScreen($game);
+                $command = "screen -S $name -X stuff \"$cmd\"`echo -ne '\015'`";
+                $connection = $this->connection->getConnection($game->getServer());
+                if (null === $connection) {
+                    return $this->redirectToRoute('game_index');
+                }
 
-            $this->connection->sendCommand($connection, $command);
-            $this->addFlash('success', 'Command sended!');
-        } catch (\Exception $exception) {
-            $this->logger->error($exception->getMessage());
+                $this->connection->sendCommand($connection, $command);
+                $this->addFlash('success', 'Command sended!');
+            } catch (\Exception $exception) {
+                $this->logger->error($exception->getMessage());
+                $this->addFlash('danger', 'Command send failed!');
+            }
         }
 
         return $this->redirectToRoute('game_logs', [
