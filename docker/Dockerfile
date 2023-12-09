@@ -1,4 +1,4 @@
-FROM dunglas/frankenphp:latest-php8.2
+FROM dunglas/frankenphp:latest-php8.3
 
 # Environements
 ENV FRANKENPHP_CONFIG="worker ./public/index.php"
@@ -11,7 +11,7 @@ ENV TZ=Europe/Paris
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
-    lsb-release gnupg supervisor cron systemd default-mysql-client libpq-dev
+    lsb-release gnupg supervisor cron systemd default-mysql-client libpq-dev unzip
 
 # Install php extensions
 RUN install-php-extensions \
