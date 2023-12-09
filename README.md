@@ -36,15 +36,18 @@ The project has been designed to run under docker with frankenphp, if you want t
     "class": "Runtime\\FrankenPhpSymfony\\Runtime"
 }
 ```
-# Crontab
-You have a cron job for game server verification that runs every 5 minutes directly in the container.
+# Cron jobs
+You have a cron job for game servers verification that runs every 5 minutes directly in the container.
 
-You can run up to 3 crontab commands to manage updates and restarts of your game servers when you want:
+You can run up to 3 cron jobs commands to manage updates and restarts of your game servers from the interface.
+
+If you want to manage cron jobs outside the application, you can add them like this:
 ```
 0 4 * * * docker exec <container_app> php bin/console cron:server:stop <id_game_server> >> /var/log/cron.log 2>&1
 1 4 * * * docker exec <container_app> php bin/console cron:server:update <id_game_server> --time=120 >> /var/log/cron.log 2>&1
 3 4 * * * docker exec <container_app> php bin/console cron:server:start <id_game_server> >> /var/log/cron.log 2>&1
 ```
 
-# Importante note
-It is necessary to install your game server before adding it to GSM.
+# Importante notes
+- You need to install your game server before adding it to GSM.
+- If the gsm container is refreshed, the cronjobs present in the base will be added to the container's crontab.

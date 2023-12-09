@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "33cd4d92410bd8c81c1938ea9cb99a3a",
+    "content-hash": "5158c56e2219b0a7de2e6874c9ce07c5",
     "packages": [
         {
             "name": "divineomega/php-ssh-connection",
@@ -7779,6 +7779,53 @@
                 }
             ],
             "time": "2023-11-06T11:00:25+00:00"
+        },
+        {
+            "name": "tiben/crontab-manager",
+            "version": "v1.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TiBeN/CrontabManager.git",
+                "reference": "79ade7bfc895c4594905a2554d7a82f6567aabf3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TiBeN/CrontabManager/zipball/79ade7bfc895c4594905a2554d7a82f6567aabf3",
+                "reference": "79ade7bfc895c4594905a2554d7a82f6567aabf3",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">= 5.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8.36|^5.7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "TiBeN\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Benjamin Legendre",
+                    "email": "legendre.benjamin@gmail.com"
+                }
+            ],
+            "description": "A library for managing linux cron jobs.",
+            "keywords": [
+                "crontab",
+                "scheduling"
+            ],
+            "support": {
+                "issues": "https://github.com/TiBeN/CrontabManager/issues",
+                "source": "https://github.com/TiBeN/CrontabManager/tree/v1.4.0"
+            },
+            "time": "2023-05-02T16:54:54+00:00"
         },
         {
             "name": "twig/extra-bundle",
