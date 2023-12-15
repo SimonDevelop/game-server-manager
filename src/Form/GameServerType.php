@@ -18,6 +18,7 @@ class GameServerType extends AbstractType
             ->add('commandStart')
             ->add('commandStop')
             ->add('commandUpdate')
+            ->add('commandCustomInternal')
             ->add('path')
             ->add('server', EntityType::class, [
                 "class" => Server::class,

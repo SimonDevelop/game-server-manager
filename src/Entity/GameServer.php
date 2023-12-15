@@ -31,13 +31,16 @@ class GameServer
     private $name;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $commandStart;
+    private string $commandStart;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private $commandUpdate;
+    private ?string $commandUpdate;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $commandStop;
+    private string $commandStop;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $commandCustomInternal = null;
 
     #[ORM\Column(type: 'string', length: 255)]
     private $path;
@@ -65,9 +68,9 @@ class GameServer
     {
         $this->stateType = 0;
         $this->createdAt = new DateTimeImmutable();
-        $this->users     = new ArrayCollection();
-        $this->logs      = new ArrayCollection();
-        $this->cronjobs  = new ArrayCollection();
+        $this->users = new ArrayCollection();
+        $this->logs = new ArrayCollection();
+        $this->cronjobs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -119,6 +122,18 @@ class GameServer
     public function setCommandStop(string $commandStop): self
     {
         $this->commandStop = $commandStop;
+
+        return $this;
+    }
+
+    public function getCommandCustomInternal(): ?string
+    {
+        return $this->commandCustomInternal;
+    }
+
+    public function setCommandCustomInternal(?string $commandCustomInternal): self
+    {
+        $this->commandCustomInternal = $commandCustomInternal;
 
         return $this;
     }
