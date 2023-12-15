@@ -127,7 +127,8 @@ class GameServerController extends AbstractController
         $crons             = [
             "start" => $crontabRepository->findJobByRegex("/".$name."_start_/"),
             "stop" => $crontabRepository->findJobByRegex("/".$name."_stop_/"),
-            "update" => $crontabRepository->findJobByRegex("/".$name."_update_/")
+            "update" => $crontabRepository->findJobByRegex("/".$name."_update_/"),
+            "custom" => $crontabRepository->findJobByRegex("/".$name."_custom_/")
         ];
 
         $form = $this->createForm(CronType::class);

@@ -22,6 +22,7 @@ class CronType extends AbstractType
                     "Start command" => "start",
                     "Stop command" => "stop",
                     "Update command" => "update",
+                    "Custom command" => "custom"
                 ]
             ])
             ->add('periodicity', TextType::class, [

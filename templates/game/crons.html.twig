@@ -57,6 +57,19 @@
         {% endfor %}
     </ul>
 
+    <ul class="list-group">
+        {% for cron in crons['custom'] %}
+            <li class="list-group-item">
+                Custom command with cron : {{ cron.minutes ~ ' ' ~ cron.hours ~ ' ' ~ cron.dayOfMonth ~ ' ' ~ cron.months ~ ' ' ~ cron.dayOfWeek }}
+                <form method="post" action="{{ path('game_cron_delete', {'id': game.id}) }}" onsubmit="return confirm('Are you sure you want to remove this cronjob?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('cron' ~ game.id) }}">
+                    <input type="hidden" name="cronjob" value="{{ cron.comments }}">
+                    <button class="btn btn-danger">Remove</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+
     {{ form_start(form) }}
     <div class="row mt-4">
         <div class="col-md-12">
