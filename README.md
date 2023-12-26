@@ -15,20 +15,20 @@ services:
       - APP_SECRET=!CHangeMe!
       - PASSWORD_HASH_KEY=!CHangeMe!
       - IV_HASH=!CHangeMe!
-      - DATABASE_URL=mysql://root:root@mysql:3306/gsm?serverVersion=5.7
+      - DATABASE_URL=postgresql://user:pass@postgres:5432/gsm?serverVersion=16&charset=utf8
       - TZ=Europe/Paris
     depends_on:
-      - mysql
+      - postgres
     ports:
       - 80:8080
 
-  mysql:
+  postgres:
     restart: always
-    image: mysql:5.7
-    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+    image: postgres:16
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=gsm
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: gsm
 ```
 The project has been designed to run under docker with frankenphp, if you want to use it out of docker, remember to remove the `runtime/frankenphp-symfony` package and this part of the composer.json :
 ```

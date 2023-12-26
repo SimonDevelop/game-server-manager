@@ -11,10 +11,13 @@ ENV TZ=Europe/Paris
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
-    lsb-release gnupg supervisor cron systemd default-mysql-client libpq-dev unzip
+    lsb-release gnupg supervisor cron systemd libpq-dev unzip
 
 # Install php extensions
 RUN install-php-extensions \
+    pgsql \
+    pdo \
+    pdo_pgsql \
     pdo_mysql \
     gd \
     intl \
