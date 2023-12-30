@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\GameServerRepository;
-use App\Entity\Server;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -25,42 +24,45 @@ class GameServer
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $name;
+    private ?string $name = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private string $commandStart;
+    private ?string $commandStart = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $commandUpdate;
+    private ?string $commandUpdate = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private string $commandStop;
+    private ?string $commandStop = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $commandCustomInternal = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $path;
+    private ?string $path = null;
 
     #[ORM\Column(type: 'integer')]
-    private $stateType;
+    private ?int $stateType = null;
 
     #[ORM\ManyToOne(targetEntity: Server::class, cascade: ['persist'])]
     #[ORM\JoinColumn(name: 'id_server', referencedColumnName: 'id', nullable: true, onDelete: 'CASCADE')]
-    private $server;
+    private ?Server $server = null;
 
     #[ORM\Column(type: 'datetime')]
-    private $createdAt;
+    private \DateTimeInterface $createdAt;
 
+    /** @var Collection<int, User> */
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'gameServers')]
     private Collection $users;
 
+    /** @var Collection<int, Log> */
     #[ORM\OneToMany(mappedBy: 'gameServer', targetEntity: Log::class)]
     private Collection $logs;
 
+    /** @var Collection<int, Cronjob> */
     #[ORM\OneToMany(mappedBy: 'gameServer', targetEntity: Cronjob::class)]
     private Collection $cronjobs;
 
@@ -114,7 +116,7 @@ class GameServer
         return $this;
     }
 
-    public function getCommandStop(): string
+    public function getCommandStop(): ?string
     {
         return $this->commandStop;
     }
@@ -138,7 +140,7 @@ class GameServer
         return $this;
     }
 
-    public function getPath(): string
+    public function getPath(): ?string
     {
         return $this->path;
     }
@@ -162,7 +164,7 @@ class GameServer
         return $this;
     }
 
-    public function getState(): string
+    public function getState(): ?string
     {
         return self::STATE_TYPE[$this->stateType];
     }

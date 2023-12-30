@@ -8,6 +8,8 @@ use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * @extends ServiceEntityRepository<Server>
+ *
  * @method Server|null find($id, $lockMode = null, $lockVersion = null)
  * @method Server|null findOneBy(array $criteria, array $orderBy = null)
  * @method Server[]    findAll()
@@ -26,7 +28,7 @@ class ServerRepository extends ServiceEntityRepository
             ->getQuery();
     }
 
-    public function findById($id): ?Server
+    public function findById(int $id): ?Server
     {
         return $this->createQueryBuilder('s')
             ->andWhere('s.id = :id')

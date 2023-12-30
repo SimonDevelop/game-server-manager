@@ -22,7 +22,7 @@ class SendCommandHandler
     ) {
     }
 
-    public function __invoke(SendCommandMessage $message)
+    public function __invoke(SendCommandMessage $message): void
     {
         $game = $this->gameRepository->findById($message->getId());
         if (null === $game) {

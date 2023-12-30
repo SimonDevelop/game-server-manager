@@ -52,7 +52,9 @@ class SecurityController extends AbstractController
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function account(Request $request, UserPasswordHasherInterface $userPasswordHasher): Response
     {
-        $user = $this->userRepository->findOneById($this->getUser()->getId());
+        $user = $this->userRepository->findOneBy([
+            'username' => $this->getUser()->getUserIdentifier()
+        ]);
         $form = $this->createForm(AccountFormType::class);
         $form->handleRequest($request);
 

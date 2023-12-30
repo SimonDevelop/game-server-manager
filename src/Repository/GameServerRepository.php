@@ -7,10 +7,12 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method Game|null find($id, $lockMode = null, $lockVersion = null)
- * @method Game|null findOneBy(array $criteria, array $orderBy = null)
- * @method Game[]    findAll()
- * @method Game[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends ServiceEntityRepository<GameServer>
+ *
+ * @method GameServer|null find($id, $lockMode = null, $lockVersion = null)
+ * @method GameServer|null findOneBy(array $criteria, array $orderBy = null)
+ * @method GameServer[]    findAll()
+ * @method GameServer[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class GameServerRepository extends ServiceEntityRepository
 {
@@ -19,7 +21,7 @@ class GameServerRepository extends ServiceEntityRepository
         parent::__construct($registry, GameServer::class);
     }
 
-    public function findById($id): ?GameServer
+    public function findById(int $id): ?GameServer
     {
         return $this->createQueryBuilder('g')
             ->andWhere('g.id = :id')
@@ -28,13 +30,16 @@ class GameServerRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    public function findByUser($id): ?array
+    /**
+     * @return GameServer[]
+     */
+    public function findByUsername(string $username): array
     {
         return $this->createQueryBuilder('g')
             ->leftJoin('g.users', 'u')
             ->addSelect('u')
-            ->andWhere('u.id = :id')
-            ->setParameter('id', $id)
+            ->andWhere('u.username = :username')
+            ->setParameter('username', $username)
             ->getQuery()
             ->getResult();
     }

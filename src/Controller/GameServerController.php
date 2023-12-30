@@ -46,7 +46,7 @@ class GameServerController extends AbstractController
     {
         $user = $this->getUser();
         if (in_array('ROLE_USER', $user->getRoles())) {
-            $gameServers = $this->gameServerRepository->findByUser($user->getId());
+            $gameServers = $this->gameServerRepository->findByUsername($user->getUserIdentifier());
         } else {
             $gameServers = $this->gameServerRepository->findAll();
         }
@@ -146,10 +146,9 @@ class GameServerController extends AbstractController
                 $time = '--time=120 ';
             }
 
-            $crontabJob = CrontabJob::createFromCrontabLine("$periodicity php /app/bin/console cron:server:$action $id $time>> /var/log/cron.log 2>&1");
-            $crontabJob->setComments($name."_".$action."_".(count($crons[$action])+1));
-
-            if (isset($crontabJob)) {
+            try {
+                $crontabJob = CrontabJob::createFromCrontabLine("$periodicity php /app/bin/console cron:server:$action $id $time>> /var/log/cron.log 2>&1");
+                $crontabJob->setComments($name."_".$action."_".(count($crons[$action])+1));
                 $crontabRepository->addJob($crontabJob);
                 $crontabRepository->persist();
                 $cronjobEntity = new Cronjob();
@@ -161,7 +160,9 @@ class GameServerController extends AbstractController
                 $this->em->flush();
 
                 $this->addFlash('success', $this->translator->trans('Cronjob created with successful!'));
-            } else {
+            } catch (\Exception $e) {
+                $this->logger->error($e->getMessage());
+
                 $this->addFlash('danger', $this->translator->trans('Cronjob created failed!'));
             }
 
@@ -223,7 +224,7 @@ class GameServerController extends AbstractController
             $cmd      = $game->getCommandStart();
             $command  = "cd $path && touch server.log && screen -c $pathLogs -dmSL $name $cmd";
             $informations = [
-                'user'   => $this->getUser()->getId(),
+                'user'   => $this->getUser()->getUserIdentifier(),
                 'action' => 'Server started',
             ];
 
@@ -246,7 +247,7 @@ class GameServerController extends AbstractController
             $cmd     = $game->getCommandStop();
             $command = "screen -S $name -X stuff \"$cmd\"`echo -ne '\015'`";
             $informations = [
-                'user'   => $this->getUser()->getId(),
+                'user'   => $this->getUser()->getUserIdentifier(),
                 'action' => 'Server stopped',
             ];
 
@@ -269,7 +270,7 @@ class GameServerController extends AbstractController
             $cmd     = $game->getCommandUpdate();
             $command = "cd $path && $cmd";
             $informations = [
-                'user'   => $this->getUser()->getId(),
+                'user'   => $this->getUser()->getUserIdentifier(),
                 'action' => 'Server Updating',
             ];
 
@@ -291,7 +292,7 @@ class GameServerController extends AbstractController
             $name    = $this->gameOperations->getGameServerNameScreen($game);
             $command = "screen -XS $name quit";
             $informations = [
-                'user'   => $this->getUser()->getId(),
+                'user'   => $this->getUser()->getUserIdentifier(),
                 'action' => 'Server killed',
             ];
 

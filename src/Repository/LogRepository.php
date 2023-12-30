@@ -40,12 +40,15 @@ class LogRepository extends ServiceEntityRepository
         }
     }
 
-    public function getLogsByUser(int $id, ?int $limit = null): ?array
+    /**
+     * @return array<mixed>|null
+     */
+    public function getLogsByUsername(string $username, ?int $limit = null): ?array
     {
         $qb = $this->createQueryBuilder('l')
             ->leftJoin('l.user', 'u')
-            ->andWhere('u.id = :id')
-            ->setParameter('id', $id)
+            ->andWhere('u.username = :username')
+            ->setParameter('username', $username)
             ->addOrderBy('l.createdAt', 'DESC');
         if (null !== $limit) {
             $qb->setFirstResult(0)
@@ -55,7 +58,10 @@ class LogRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function getLogs(?int $limit = null): ?array
+    /**
+     * @return Log[]
+     */
+    public function getLogs(?int $limit = null): array
     {
         $qb = $this->createQueryBuilder('l')
             ->leftJoin('l.user', 'u')
@@ -68,7 +74,7 @@ class LogRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function getLogsPage($start = 0, $limit = 20)
+    public function getLogsPage(int $start = 0, int $limit = 20): int
     {
         $qb = $this->createQueryBuilder("l")
             ->leftJoin('l.user', 'u')
@@ -80,7 +86,10 @@ class LogRepository extends ServiceEntityRepository
         return count(new Paginator($qb));
     }
 
-    public function getLogsWithPosition($start = 0, $limit = 20)
+    /**
+     * @return Log[]
+     */
+    public function getLogsWithPosition(int $start = 0, int $limit = 20): array
     {
         $qb = $this->createQueryBuilder("l")
             ->leftJoin('l.user', 'u')

@@ -14,7 +14,7 @@ class LogService
     {
     }
 
-    public function addLog(GameServer $gameServer, string $action, bool $state = true, ?User $user = null)
+    public function addLog(GameServer $gameServer, string $action, bool $state = true, ?User $user = null): void
     {
         $log = new Log();
         $log->setAction($action);

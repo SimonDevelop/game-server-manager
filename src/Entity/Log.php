@@ -26,7 +26,7 @@ class Log
     private ?bool $state;
 
     #[ORM\Column(type: 'datetime')]
-    private $createdAt;
+    private \DateTimeInterface $createdAt;
 
     #[ORM\ManyToOne(inversedBy: 'logs')]
     #[ORM\JoinColumn(onDelete: 'CASCADE')]

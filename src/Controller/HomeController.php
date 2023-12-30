@@ -27,8 +27,8 @@ class HomeController extends AbstractController
     {
         $user = $this->getUser();
         if (in_array('ROLE_USER', $user->getRoles())) {
-            $gameServers = $this->gameServerRepository->findByUser($user->getId());
-            $logs        = $this->logRepository->getLogsByUser($user->getId(), 8);
+            $gameServers = $this->gameServerRepository->findByUsername($user->getUserIdentifier());
+            $logs        = $this->logRepository->getLogsByUsername($user->getUserIdentifier(), 8);
         } else {
             $gameServers = $this->gameServerRepository->findAll();
             $logs        = $this->logRepository->getLogs(8);

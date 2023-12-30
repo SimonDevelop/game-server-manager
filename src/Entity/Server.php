@@ -11,33 +11,33 @@ use DateTimeInterface;
 #[ORM\Table(name: '`server`')]
 class Server
 {
-    private $cipher = 'aes-128-cbc';
+    private string $cipher = 'aes-128-cbc';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $name;
+    private ?string $name = null;
 
     #[ORM\Column(type: 'string', length: 16)]
-    private $ip;
+    private ?string $ip = null;
 
     #[ORM\Column(type: 'string', length: 5)]
-    private $port;
+    private ?string $port = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $login;
+    private ?string $login = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $password;
+    private ?string $password = null;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
-    private $lastConnection;
+    private ?\DateTimeInterface $lastConnection = null;
 
     #[ORM\Column(type: 'datetime')]
-    private $createdAt;
+    private \DateTimeInterface $createdAt;
 
     public function __construct()
     {
