@@ -10,6 +10,11 @@
                 {{ error.messageKey | trans(error.messageData, "security") }}
             </div>
         {% endif %}
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-dismissible alert-success container">
+                {{ message }}
+            </div>
+        {% endfor %}
 
         <h1 class="text-center h3 mb-3 fw-normal">{{ 'Please sign in'|trans }}</h1>
         <form method="post">
