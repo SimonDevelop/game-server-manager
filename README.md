@@ -1,3 +1,7 @@
+[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%208.2-8892BF.svg)](https://php.net/)
+[![Github Actions PHP](https://github.com/SimonDevelop/game-server-manager/workflows/PHP/badge.svg)](https://github.com/SimonDevelop/game-server-manager/actions)
+[![GitHub license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/SimonDevelop/game-server-manager/blob/master/LICENSE)
+
 # game-server-manager
 This web application allows you to control your game servers on multiple machines under Linux. The idea is to give you the means to remotely shutdown, start and update your game servers by sending ssh commands.
 
