@@ -97,7 +97,7 @@ class ServerController extends AbstractController
     #[Route(path: '/{id}/check', name: 'server_check', methods: ['GET'])]
     public function checkConnect(Server $server): Response
     {
-        if (null !== $this->connection->getConnection($server)) {
+        if (true === $this->connection->getConnection($server)) {
             $this->addFlash('success', $this->translator->trans('Authentication successful!'));
         } else {
             $this->addFlash('danger', $this->translator->trans('Authentication failed!'));
