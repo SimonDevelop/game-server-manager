@@ -50,6 +50,8 @@ Server: Serveur
 Path: Chemin
 Start command: Commande de démarrage
 Stop command: Commande d'arrêt
+Update command: Commande de mise à jour
+Custom command: Commande personnalisée
 Command: Commande
 Periodicity: Périodicité
 Delete: Supprimer
