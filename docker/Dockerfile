@@ -11,7 +11,7 @@ ENV TZ=Europe/Paris
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
-    lsb-release gnupg supervisor cron systemd libpq-dev unzip
+    lsb-release ca-certificates curl gnupg supervisor cron systemd libpq-dev unzip
 
 # Install php extensions
 RUN install-php-extensions \
@@ -27,9 +27,9 @@ RUN install-php-extensions \
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
 
 # Install nodejs and yarn
-RUN curl -sL https://deb.nodesource.com/setup_lts.x --output nodesjssetup_lts.x.sh && \
-    /bin/sh nodesjssetup_lts.x.sh && \
-    rm -f nodesjssetup_lts.x.sh
+RUN mkdir -p /etc/apt/keyrings
+RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
 RUN apt-get update && apt-get install nodejs -y && npm i -g yarn
 
 # Copy files project
