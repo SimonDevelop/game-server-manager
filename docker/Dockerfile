@@ -24,6 +24,7 @@ RUN install-php-extensions \
     pdo_pgsql \
     pdo_mysql \
     gd \
+    opcache \
     intl \
     zip
 

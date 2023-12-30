@@ -24,8 +24,10 @@ RUN install-php-extensions \
     pdo_pgsql \
     pdo_mysql \
     gd \
+    opcache \
     intl \
-    zip
+    zip \
+    xdebug
 
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
