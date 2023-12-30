@@ -99,6 +99,8 @@ Authentication failed!: Échec de l'authentification !
 Successful user creation!: Création d'un utilisateur réussie !
 User update successful!: Mise à jour de l'utilisateur réussie !
 User deletion successful!: Suppression de l'utilisateur réussie !
+See users: Voir les utilisateurs
+Command line: Ligne de commande
 
 # Sentences
 Your account is deactivated: Votre compte est désactivé
