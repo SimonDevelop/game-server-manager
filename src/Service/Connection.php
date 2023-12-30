@@ -3,7 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Server;
-use DivineOmega\SSHConnection\SSHConnection;
+use phpseclib3\Net\SSH2;
 
 class Connection
 {
@@ -11,15 +11,11 @@ class Connection
     {
     }
 
-    public function getConnection(Server $server): ?SSHConnection
+    public function getConnection(Server $server): ?SSH2
     {
         try {
-            $connection = (new SSHConnection())
-                ->to($server->getIp())
-                ->onPort($server->getPort())
-                ->as($server->getLogin())
-                ->withPassword($server->getPassword())
-                ->connect();
+            $connection = new SSH2($server->getIp(), $server->getPort());
+            $connection->login($server->getLogin(), $server->getPassword());
 
             $this->serverOperations->updateLastConnection($server);
             return $connection;
@@ -28,21 +24,20 @@ class Connection
         }
     }
 
-    public function sendCommand(SSHConnection $connection, string $command): bool
+    public function sendCommand(SSH2 $connection, string $command): bool
     {
         try {
-            $connection->run($command);
+            $connection->exec($command);
             return true;
         } catch (\Throwable $th) {
             return false;
         }   
     }
 
-    public function sendCommandWithResponse(SSHConnection $connection, string $command): ?string
+    public function sendCommandWithResponse(SSH2 $connection, string $command): ?string
     {
         try {
-            $cmd = $connection->run($command);
-            return $cmd->getOutput();
+            return $connection->exec($command, true);
         } catch (\Throwable $th) {
             return null;
         }   
