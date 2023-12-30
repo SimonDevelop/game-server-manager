@@ -27,7 +27,10 @@ class Connection
     public function sendCommand(SSH2 $connection, string $command): bool
     {
         try {
-            $connection->exec($command);
+            $response = $connection->exec($command);
+            if (is_bool($response)) {
+                return $response;
+            }
 
             return true;
         } catch (\Throwable $th) {
@@ -35,12 +38,17 @@ class Connection
         }   
     }
 
-    public function sendCommandWithResponse(SSH2 $connection, string $command): ?string
+    public function sendCommandWithResponse(SSH2 $connection, string $command): string|bool
     {
         try {
-            return $connection->exec($command);
+            $response = $connection->exec($command);
+            if (is_string($response)) {
+                return $response;
+            }
+
+            return false;
         } catch (\Throwable $th) {
-            return null;
+            return false;
         }   
     }
 }
