@@ -40,6 +40,7 @@ class GameServerRepository extends ServiceEntityRepository
             ->addSelect('u')
             ->andWhere('u.username = :username')
             ->setParameter('username', $username)
+            ->addOrderBy('g.id', 'ASC')
             ->getQuery()
             ->getResult();
     }
