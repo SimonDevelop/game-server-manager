@@ -26,6 +26,7 @@ class GameServerOperations
         if (substr($path, -1) === '/') {
             $path = substr($path, 0, -1);
         }
+
         return "$path/$name";
     }
 
@@ -36,6 +37,7 @@ class GameServerOperations
         if (substr($path, -1) === '/') {
             $path = substr($path, 0, -1);
         }
+
         return "$path/$name";
     }
 

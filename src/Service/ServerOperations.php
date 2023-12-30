@@ -12,7 +12,7 @@ class ServerOperations
     {
     }
 
-    public function updateLastConnection(Server $server)
+    public function updateLastConnection(Server $server): void
     {
         $server->setLastConnection(new DateTimeImmutable());
         $this->em->persist($server);

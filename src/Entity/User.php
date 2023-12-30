@@ -20,33 +20,38 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 50, unique: true)]
-    private $username;
+    private ?string $username = null;
 
+    /**
+     * @var string[]
+     */
     #[ORM\Column(type: 'json')]
-    private $roles = ["ROLE_USER"];
+    private array $roles = ["ROLE_USER"];
 
     #[ORM\Column(type: 'string')]
-    private $password;
+    private ?string $password = null;
 
     #[ORM\Column(type: 'boolean')]
-    private $enabled;
+    private bool $enabled;
 
     #[ORM\Column(type: 'datetime')]
-    private $createdAt;
+    private \DateTimeInterface $createdAt;
 
+    /** @var Collection<int, GameServer> */
     #[ORM\ManyToMany(targetEntity: GameServer::class, inversedBy: 'users')]
     private Collection $gameServers;
 
+    /** @var Collection<int, Log> */
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Log::class)]
     private Collection $logs;
 
     public function __construct()
     {
-        $this->enabled     = true;
-        $this->createdAt   = new DateTimeImmutable();
+        $this->enabled = true;
+        $this->createdAt = new DateTimeImmutable();
         $this->gameServers = new ArrayCollection();
         $this->logs = new ArrayCollection();
     }
@@ -78,7 +83,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see UserInterface
      */
-    public function getSalt()
+    public function getSalt(): null
     {
         // The salt is not needed for the password-based hashing algorithm,
         // so we must return null here.
@@ -99,6 +104,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @see UserInterface
+     *
+     * @return string[]
      */
     public function getRoles(): array
     {
@@ -106,7 +113,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return array_unique($roles);
     }
-
+    /**
+     * @param string[] $roles
+     */
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
@@ -129,7 +138,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see PasswordAuthenticatedUserInterface
      */
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
         return $this->password;
     }
