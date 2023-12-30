@@ -59,7 +59,7 @@
                             {% for user in game.users %}{{ user.username }}<br>{% endfor %}
                             {% if game.users is empty %}No user{% endif %}
                             ">
-                        See users
+                        {{ 'See users'|trans }}
                     </button>
                 </td>
                 <td>

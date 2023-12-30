@@ -23,7 +23,7 @@
     <form action="{{ path('game_cmd', { 'id': game.id }) }}" method="post">
         <input type="hidden" name="_token" value="{{ csrf_token('cmd' ~ game.id) }}">
         <div class="input-group mb-3">
-            <input type="text" name="cmd" class="form-control" placeholder="Command line..." aria-label="Command line..." aria-describedby="button-addon">
+            <input type="text" name="cmd" class="form-control" placeholder="{{ 'Command line'|trans }}..." aria-label="{{ 'Command line'|trans }}..." aria-describedby="button-addon">
             <button class="btn btn-outline-success" type="submit" id="button-addon">{{ 'Send'|trans }}</button>
         </div>
     </form>
