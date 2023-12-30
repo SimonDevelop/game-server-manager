@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Servers list{% endblock %}
+{% block title %}{{ 'Servers list'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container mt-4">
 
-    <h1>Servers list</h1>
+    <h1>{{ 'Servers list'|trans }}</h1>
 
     {% for message in app.flashes("success") %}
       <div class="alert alert-success">
@@ -19,18 +19,18 @@
       </div>
     {% endfor %}
 
-    <a class="btn btn-success" href="{{ path('server_new') }}">Added a new server</a>
+    <a class="btn btn-success" href="{{ path('server_new') }}">{{ 'Added a new server'|trans }}</a>
 
     <table class="table table-striped table-hover">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Server name</th>
-                <th>IP Address</th>
-                <th>SSH Port</th>
-                <th>Login</th>
-                <th>Date of creation</th>
-                <th>Actions</th>
+                <th>{{ 'Id'|trans }}</th>
+                <th>{{ 'Server name'|trans }}</th>
+                <th>{{ 'IP address'|trans }}</th>
+                <th>{{ 'SSH port'|trans }}</th>
+                <th>{{ 'Login'|trans }}</th>
+                <th>{{ 'Date of creation'|trans }}</th>
+                <th>{{ 'Actions'|trans }}</th>
             </tr>
         </thead>
         <tbody>
@@ -45,10 +45,10 @@
                 <td>
                     <div class="row justify-content-start">
                         <div class="col-auto">
-                            <a class="btn btn-primary" href="{{ path('server_check', {'id': server.id}) }}">Check the SSH connection</a>
+                            <a class="btn btn-primary" href="{{ path('server_check', {'id': server.id}) }}">{{ 'Check the SSH connection'|trans }}</a>
                         </div>
                         <div class="col-auto">
-                            <a class="btn btn-warning" href="{{ path('server_edit', {'id': server.id}) }}">Edit</a>
+                            <a class="btn btn-warning" href="{{ path('server_edit', {'id': server.id}) }}">{{ 'Edit'|trans }}</a>
                         </div>
                         <div class="col-auto">
                             {{ include('server/_delete_form.html.twig') }}
@@ -58,12 +58,12 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="10">no records found</td>
+                <td colspan="10">{{ 'no records found'|trans }}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a class="btn btn-success" href="{{ path('server_new') }}">Added a new server</a>
+    <a class="btn btn-success" href="{{ path('server_new') }}">{{ 'Added a new server'|trans }}</a>
 </div>
 {% endblock %}

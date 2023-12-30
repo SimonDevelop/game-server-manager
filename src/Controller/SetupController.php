@@ -11,12 +11,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SetupController extends AbstractController
 {
     public function __construct(
         private readonly UserRepository $userRepository,
-        private readonly EntityManagerInterface $em
+        private readonly EntityManagerInterface $em,
+        private readonly TranslatorInterface $translator
     ) {
     }
 
@@ -37,7 +39,7 @@ class SetupController extends AbstractController
                 return $this->render('setup/index.html.twig', [
                     'user'       => $user,
                     'form'       => $form->createView(),
-                    'error_pass' => "You must enter a password."
+                    'error_pass' => $this->translator->trans('You must enter a password')
                 ]);
             }
             $user->setPassword(
@@ -52,7 +54,7 @@ class SetupController extends AbstractController
             $this->em->persist($user);
             $this->em->flush();
 
-            $this->addFlash('success', 'Your admin account has been created!');
+            $this->addFlash('success', $this->translator->trans('Your admin account has been created!'));
 
             return $this->redirectToRoute('app_login');
         }

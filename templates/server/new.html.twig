@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Add a server{% endblock %}
+{% block title %}{{ 'Add a server'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container mt-4">
-    <h1>Add a server</h1>
+    <h1>{{ 'Add a server'|trans }}</h1>
 
     {{ include('server/_form.html.twig') }}
 
-    <a class="btn btn-primary" href="{{ path('server_index') }}">Back to the list</a>
+    <a class="btn btn-primary" href="{{ path('server_index') }}">{{ 'Back to the list'|trans }}</a>
 </div>
 {% endblock %}

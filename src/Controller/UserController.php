@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[IsGranted(new Expression('is_granted("ROLE_ADMIN")'))]
 #[Route(path: '/user')]
@@ -21,7 +22,8 @@ class UserController extends AbstractController
     public function __construct(
         private readonly UserRepository $userRepository,
         private readonly EntityManagerInterface $em,
-        private readonly UserPasswordHasherInterface $userPasswordHasher
+        private readonly UserPasswordHasherInterface $userPasswordHasher,
+        private readonly TranslatorInterface $translator
     ) {
     }
 
@@ -45,7 +47,7 @@ class UserController extends AbstractController
                 return $this->render('user/new.html.twig', [
                     'user'       => $user,
                     'form'       => $form->createView(),
-                    'error_pass' => "You must enter a password."
+                    'error_pass' => $this->translator->trans('You must enter a password')
                 ]);
             }
             $user->setPassword(
@@ -56,7 +58,7 @@ class UserController extends AbstractController
             );
             $this->em->persist($user);
             $this->em->flush();
-            $this->addFlash('success', 'Successful user creation!');
+            $this->addFlash('success', $this->translator->trans('Successful user creation!'));
 
             return $this->redirectToRoute('user_index');
         }
@@ -81,7 +83,7 @@ class UserController extends AbstractController
                 )
             );
             $this->em->flush();
-            $this->addFlash('success', 'User update successful!');
+            $this->addFlash('success', $this->translator->trans('User update successful!'));
 
             return $this->redirectToRoute('user_index');
         }
@@ -98,7 +100,7 @@ class UserController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
             $this->em->remove($user);
             $this->em->flush();
-            $this->addFlash('success', 'User deletion successful!');
+            $this->addFlash('success', $this->translator->trans('User deletion successful!'));
         }
 
         return $this->redirectToRoute('user_index');

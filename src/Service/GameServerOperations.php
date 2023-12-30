@@ -8,14 +8,10 @@ use App\Service\Connection;
 
 class GameServerOperations
 {
-    private EntityManagerInterface $em;
-
-    private Connection $connection;
-
-    public function __construct(EntityManagerInterface $em, Connection $connection)
-    {
-        $this->em         = $em;
-        $this->connection = $connection;
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        private readonly Connection $connection
+    ) {
     }
 
     public function getGameServerNameScreen(GameServer $game): string

@@ -4,7 +4,6 @@ namespace App\Command;
 
 use App\Repository\GameServerRepository;
 use App\Service\GameServerOperations;
-use Doctrine\ORM\EntityManagerInterface;
 use App\Service\Connection;
 use App\Service\LogService;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -12,6 +11,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[AsCommand(
     name: 'cron:server:custom',
@@ -19,39 +19,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 class CronServerCustomCommand extends Command
 {
-    #@var GameServerRepository
-    private $gameServerRepository;
-
-    #@var GameServerOperations
-    private $gameOperations;
-
-    #@var EntityManagerInterface
-    private $em;
-
-    #@var Connection
-    private $connection;
-
-    #@var LogService
-    private $logService;
-
-    #@param GameServerRepository
-    #@param GameServerOperations
-    #@param EntityManagerInterface
-    #@param Connection
     public function __construct(
-        GameServerRepository $gameServerRepository,
-        GameServerOperations $gameOperations,
-        EntityManagerInterface $em,
-        Connection $connection,
-        LogService $logService
-    )
-    {
-        $this->gameServerRepository = $gameServerRepository;
-        $this->gameOperations       = $gameOperations;
-        $this->em                   = $em;
-        $this->connection           = $connection;
-        $this->logService           = $logService;
-
+        private readonly GameServerRepository $gameServerRepository,
+        private readonly GameServerOperations $gameOperations,
+        private readonly Connection $connection,
+        private readonly LogService $logService,
+        private readonly TranslatorInterface $translator
+    ) {
         parent::__construct();
     }
 
@@ -66,20 +40,20 @@ class CronServerCustomCommand extends Command
         $game = $this->gameServerRepository->findById($id);
 
         if (null === $game) {
-            $output->writeln('Game server not found');
+            $output->writeln($this->translator->trans('Game server not found'));
 
             return Command::FAILURE;
         }
 
         if (null === $game->getCommandCustomInternal()) {
-            $output->writeln('No custom command set');
+            $output->writeln($this->translator->trans('No custom command set'));
 
             return Command::FAILURE;
         }
 
         $connection = $this->connection->getConnection($game->getServer());
         if (null === $connection) {
-            $output->writeln('Failed to connect to server');
+            $output->writeln($this->translator->trans('Failed to connect to server'));
 
             return Command::FAILURE;
         }
@@ -89,15 +63,17 @@ class CronServerCustomCommand extends Command
 
         $command  = "screen -S $name -X stuff \"$cmd\"`echo -ne '\015'`";
 
-        $output->writeln('Custom command sended!');
+        $output->writeln($this->translator->trans('Custom command sended!'));
         $response = $this->connection->sendCommand($connection, $command);
         sleep(10);
 
         if (false === $response) {
-            $output->writeln('Failed to send custom command on game server');
+            $output->writeln($this->translator->trans('Failed to send custom command on game server'));
+            $this->logService->addLog($game, $this->translator->trans('Failed to send custom command on game server'), true, null);
 
             return Command::FAILURE;
         }
+        $this->logService->addLog($game, $this->translator->trans('Custom command sended!'), true, null);
 
         return Command::SUCCESS;
     }

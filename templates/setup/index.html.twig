@@ -1,16 +1,16 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Setup{% endblock %}
+{% block title %}{{ 'Setup'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container mt-4">
     <div class="form-account">
-        <h1 class="text-center h3 mb-3 fw-normal">Create my admin account</h1>
+        <h1 class="text-center h3 mb-3 fw-normal">{{ 'Create admin account'|trans }}</h1>
         <div style="margin-top: 20px;">
             {{ form_start(form) }}
                 <div class="row mt-4">
                     <div class="col-md-12">
-                        {{ form_label(form.username, "Username", {'attr': {'class': 'form-label'}}) }}
+                        {{ form_label(form.username, 'Username', {'attr': {'class': 'form-label'}}) }}
                         {{ form_widget(form.username, {'attr': {'class': 'form-control mb-4'}}) }}
                     </div>
                     <div class="col-md-12">
@@ -23,7 +23,7 @@
                     </div>
                 </div>
                 {{ form_widget(form) }}
-                <button class="btn btn-success mt-3 mb-3">{{ button_label|default('Save') }}</button>
+                <button class="btn btn-success mt-3 mb-3">{{ button_label|default('Save'|trans) }}</button>
             {{ form_end(form) }}
         </div>
     </div>

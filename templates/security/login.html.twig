@@ -1,5 +1,5 @@
 {% extends "base.html.twig" %}
-{% block title "Se connecter" %}
+{% block title 'Sign in'|trans %}
 
 {% block body %}
 <div class="container mt-4">
@@ -10,21 +10,26 @@
                 {{ error.messageKey | trans(error.messageData, "security") }}
             </div>
         {% endif %}
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-dismissible alert-success container">
+                {{ message }}
+            </div>
+        {% endfor %}
 
-        <h1 class="text-center h3 mb-3 fw-normal">Please sign in</h1>
+        <h1 class="text-center h3 mb-3 fw-normal">{{ 'Please sign in'|trans }}</h1>
         <form method="post">
             <div class="form-group">
-                <label for="username">Username</label>
+                <label for="username">{{ 'Username'|trans }}</label>
                 <input type="text" id="username" name="username" class="form-control" value="{{ last_username }}">
             </div>
             <div class="form-group">
-                <label for="password">Password</label>
+                <label for="password">{{ 'Password'|trans }}</label>
                 <input type="password" id="password" name="password" class="form-control">
             </div>
 
             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-            <input type="submit" class="btn btn-primary btn-lg w-100 mt-4" value="Sign in">
+            <input type="submit" class="btn btn-primary btn-lg w-100 mt-4" value="{{ 'Sign in'|trans }}">
         </form>
     </div>
 

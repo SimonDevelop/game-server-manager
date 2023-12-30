@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Cronjobs {{ game.name }}{% endblock %}
+{% block title %}{{ 'Cronjobs'|trans }} {{ game.name }}{% endblock %}
 
 {% block body %}
 <div class="container mt-4">
-    <h1>Cronjobs {{ game.name }}</h1>
+    <h1>{{ 'Cronjobs'|trans }} {{ game.name }}</h1>
 
     {% for message in app.flashes("success") %}
         <div class="alert alert-success">
@@ -21,11 +21,11 @@
     <ul class="list-group">
         {% for cron in crons['start'] %}
             <li class="list-group-item">
-                Start command with cron : {{ cron.minutes ~ ' ' ~ cron.hours ~ ' ' ~ cron.dayOfMonth ~ ' ' ~ cron.months ~ ' ' ~ cron.dayOfWeek }}
-                <form method="post" action="{{ path('game_cron_delete', {'id': game.id}) }}" onsubmit="return confirm('Are you sure you want to remove this cronjob?');">
+                {{ 'Start command with cron'|trans }} : {{ cron.minutes ~ ' ' ~ cron.hours ~ ' ' ~ cron.dayOfMonth ~ ' ' ~ cron.months ~ ' ' ~ cron.dayOfWeek }}
+                <form method="post" action="{{ path('game_cron_delete', {'id': game.id}) }}" onsubmit="return confirm('{{ 'Are you sure you want to remove this cronjob?'|trans }}');">
                     <input type="hidden" name="_token" value="{{ csrf_token('cron' ~ game.id) }}">
                     <input type="hidden" name="cronjob" value="{{ cron.comments }}">
-                    <button class="btn btn-danger">Remove</button>
+                    <button class="btn btn-danger">{{ 'Remove'trans }}</button>
                 </form>
             </li>
         {% endfor %}
@@ -34,11 +34,11 @@
     <ul class="list-group">
         {% for cron in crons['stop'] %}
             <li class="list-group-item">
-                Stop command with cron : {{ cron.minutes ~ ' ' ~ cron.hours ~ ' ' ~ cron.dayOfMonth ~ ' ' ~ cron.months ~ ' ' ~ cron.dayOfWeek }}
-                <form method="post" action="{{ path('game_cron_delete', {'id': game.id}) }}" onsubmit="return confirm('Are you sure you want to remove this cronjob?');">
+                {{ 'Stop command with cron'|trans }} : {{ cron.minutes ~ ' ' ~ cron.hours ~ ' ' ~ cron.dayOfMonth ~ ' ' ~ cron.months ~ ' ' ~ cron.dayOfWeek }}
+                <form method="post" action="{{ path('game_cron_delete', {'id': game.id}) }}" onsubmit="return confirm('{{ 'Are you sure you want to remove this cronjob?'|trans }}');">
                     <input type="hidden" name="_token" value="{{ csrf_token('cron' ~ game.id) }}">
                     <input type="hidden" name="cronjob" value="{{ cron.comments }}">
-                    <button class="btn btn-danger">Remove</button>
+                    <button class="btn btn-danger">{{ 'Remove'trans }}</button>
                 </form>
             </li>
         {% endfor %}
@@ -47,11 +47,11 @@
     <ul class="list-group">
         {% for cron in crons['update'] %}
             <li class="list-group-item">
-                Update command with cron : {{ cron.minutes ~ ' ' ~ cron.hours ~ ' ' ~ cron.dayOfMonth ~ ' ' ~ cron.months ~ ' ' ~ cron.dayOfWeek }}
-                <form method="post" action="{{ path('game_cron_delete', {'id': game.id}) }}" onsubmit="return confirm('Are you sure you want to remove this cronjob?');">
+                {{ 'Update command with cron'|trans }} : {{ cron.minutes ~ ' ' ~ cron.hours ~ ' ' ~ cron.dayOfMonth ~ ' ' ~ cron.months ~ ' ' ~ cron.dayOfWeek }}
+                <form method="post" action="{{ path('game_cron_delete', {'id': game.id}) }}" onsubmit="return confirm('{{ 'Are you sure you want to remove this cronjob?'|trans }}');">
                     <input type="hidden" name="_token" value="{{ csrf_token('cron' ~ game.id) }}">
                     <input type="hidden" name="cronjob" value="{{ cron.comments }}">
-                    <button class="btn btn-danger">Remove</button>
+                    <button class="btn btn-danger">{{ 'Remove'trans }}</button>
                 </form>
             </li>
         {% endfor %}
@@ -60,11 +60,11 @@
     <ul class="list-group">
         {% for cron in crons['custom'] %}
             <li class="list-group-item">
-                Custom command with cron : {{ cron.minutes ~ ' ' ~ cron.hours ~ ' ' ~ cron.dayOfMonth ~ ' ' ~ cron.months ~ ' ' ~ cron.dayOfWeek }}
-                <form method="post" action="{{ path('game_cron_delete', {'id': game.id}) }}" onsubmit="return confirm('Are you sure you want to remove this cronjob?');">
+                {{ 'Custom command with cron'|trans }} : {{ cron.minutes ~ ' ' ~ cron.hours ~ ' ' ~ cron.dayOfMonth ~ ' ' ~ cron.months ~ ' ' ~ cron.dayOfWeek }}
+                <form method="post" action="{{ path('game_cron_delete', {'id': game.id}) }}" onsubmit="return confirm('{{ 'Are you sure you want to remove this cronjob?'|trans }}');">
                     <input type="hidden" name="_token" value="{{ csrf_token('cron' ~ game.id) }}">
                     <input type="hidden" name="cronjob" value="{{ cron.comments }}">
-                    <button class="btn btn-danger">Remove</button>
+                    <button class="btn btn-danger">{{ 'Remove'trans }}</button>
                 </form>
             </li>
         {% endfor %}
@@ -88,10 +88,10 @@
     </div>
 
     {{ form_widget(form) }}
-    <button class="btn btn-success mt-3 mb-3">{{ button_label|default('Add') }}</button>
+    <button class="btn btn-success mt-3 mb-3">{{ button_label|default('Add'|trans) }}</button>
     {{ form_end(form) }}
 
 
-    <a class="btn btn-primary" href="{{ path('game_index') }}">Back to the list</a>
+    <a class="btn btn-primary" href="{{ path('game_index') }}">{{ 'Back to the list'|trans }}</a>
 </div>
 {% endblock %}

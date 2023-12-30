@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit a user{% endblock %}
+{% block title %}{{ 'Edit a user'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container mt-4">
-    <h1>Edit a user</h1>
+    <h1>{{ 'Edit a user'|trans }}</h1>
 
     {{ include('user/_form.html.twig') }}
 
-    <a class="btn btn-primary" href="{{ path('user_index') }}">Back to the list</a>
+    <a class="btn btn-primary" href="{{ path('user_index') }}">{{ 'Back to the list'|trans }}</a>
 </div>
 {% endblock %}

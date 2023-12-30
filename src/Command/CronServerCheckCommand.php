@@ -12,6 +12,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use TiBeN\CrontabManager\CrontabAdapter;
 use TiBeN\CrontabManager\CrontabJob;
 use TiBeN\CrontabManager\CrontabRepository;
@@ -28,7 +29,8 @@ class CronServerCheckCommand extends Command
         private readonly GameServerOperations $gameOperations,
         private readonly EntityManagerInterface $em,
         private readonly Connection $connection,
-        private readonly LogService $logService
+        private readonly LogService $logService,
+        private readonly TranslatorInterface $translator
     ) {
         parent::__construct();
     }
@@ -46,19 +48,19 @@ class CronServerCheckCommand extends Command
                 $logs    = $this->connection->sendCommandWithResponse($connection, $command);
 
                 if ($state === 'Off' && str_contains($logs, $name)) {
-                    $output->writeln("$name is running.");
+                    $output->writeln("$name " . $this->translator->trans('is running'));
                     $gameServer->setStateType(1);
                     $this->em->persist($gameServer);
                     $this->em->flush();
-                    $this->logService->addLog($gameServer, 'Server updated to running', true, null);
+                    $this->logService->addLog($gameServer, $this->translator->trans('Game server status (update to started)'), true, null);
                 }
 
                 if ($state === 'On' && !str_contains($logs, $name)) {
-                    $output->writeln("$name is not running.");
+                    $output->writeln("$name " . $this->translator->trans('is not running'));
                     $gameServer->setStateType(0);
                     $this->em->persist($gameServer);
                     $this->em->flush();
-                    $this->logService->addLog($gameServer, 'Server updated to stopped', true, null);
+                    $this->logService->addLog($gameServer, $this->translator->trans('Game server status (update to stopped)'), true, null);
                 }
             }
         }
