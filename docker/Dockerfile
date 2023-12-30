@@ -5,11 +5,11 @@ ENV FRANKENPHP_CONFIG="worker ./public/index.php"
 ENV APP_RUNTIME="Runtime\FrankenPhpSymfony\Runtime"
 ENV SERVER_NAME=:8080
 ENV APP_ENV=dev
-ENV TZ=Europe/Paris
+ENV TZ=America/Los_Angeles
 ENV APP_LANG=en
 
-# Set TimeZone for PHP
-RUN touch /usr/local/etc/php/php.ini && echo "date.timezone = '$TZ'" >> /usr/local/etc/php/php.ini
+# Prepare php.ini for set TZ
+RUN touch /usr/local/etc/php/php.ini
 
 # Install supervisor and cron
 RUN apt-get update && \

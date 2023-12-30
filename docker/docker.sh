@@ -1,8 +1,9 @@
 #!/bin/bash
 sleep 5
 
-# Set TimeZone
+# Set TimeZone for docker image and php
 ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+echo "date.timezone = '$TZ'" > /usr/local/etc/php/php.ini
 
 # Clear cache and update database
 php bin/console c:c

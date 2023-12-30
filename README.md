@@ -16,7 +16,7 @@ services:
       - PASSWORD_HASH_KEY=!CHangeMe!
       - IV_HASH=!CHangeMe!
       - DATABASE_URL=postgresql://user:pass@postgres:5432/gsm?serverVersion=16&charset=utf8
-      - TZ=Europe/Paris
+      - TZ=Europe/Paris #default => America/Los_Angeles
       - APP_LANG=fr #default => en
     depends_on:
       - postgres
