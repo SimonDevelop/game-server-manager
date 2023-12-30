@@ -7,11 +7,8 @@ use DivineOmega\SSHConnection\SSHConnection;
 
 class Connection
 {
-    private ServerOperations $serverOperations;
-
-    public function __construct(ServerOperations $serverOperations)
+    public function __construct(private readonly ServerOperations $serverOperations)
     {
-        $this->serverOperations = $serverOperations;
     }
 
     public function getConnection(Server $server): ?SSHConnection

@@ -13,49 +13,13 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 #[AsMessageHandler]
 class SendCommandHandler
 {
-    /**
-     * @var GameServerRepository
-     */
-    private $gameRepository;
-
-    /**
-     * @var UserRepository
-     */
-    private $userRepository;
-
-    /**
-     * @var GameServerOperations
-     */
-    private $gameOperations;
-
-    /**
-     * @var Connection
-     */
-    private $connection;
-
-    /**
-     * @var LogService
-     */
-    private $logService;
-
-    #@param GameServerRepository
-    #@param UserRepository
-    #@param GameServerOperations
-    #@param Connection
-    #@param LogService
     public function __construct(
-        GameServerRepository $gameRepository,
-        UserRepository $userRepository,
-        GameServerOperations $gameOperations,
-        Connection $connection,
-        LogService $logService
-    )
-    {
-        $this->gameRepository = $gameRepository;
-        $this->userRepository = $userRepository;
-        $this->gameOperations = $gameOperations;
-        $this->connection     = $connection;
-        $this->logService     = $logService;   
+        private readonly GameServerRepository $gameRepository,
+        private readonly UserRepository $userRepository,
+        private readonly GameServerOperations $gameOperations,
+        private readonly Connection $connection,
+        private readonly LogService $logService
+    ) {
     }
 
     public function __invoke(SendCommandMessage $message)

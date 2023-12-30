@@ -6,6 +6,7 @@ ENV APP_RUNTIME="Runtime\FrankenPhpSymfony\Runtime"
 ENV SERVER_NAME=:8080
 ENV APP_ENV=dev
 ENV TZ=Europe/Paris
+ENV APP_LANG=en
 
 # Set TimeZone for PHP
 RUN touch /usr/local/etc/php/php.ini && echo "date.timezone = '$TZ'" >> /usr/local/etc/php/php.ini

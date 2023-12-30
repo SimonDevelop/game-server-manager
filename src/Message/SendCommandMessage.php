@@ -4,20 +4,11 @@ namespace App\Message;
 
 class SendCommandMessage
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private int $id;
 
-    /**
-     * @var array
-     */
-    private $informations;
+    private array $informations;
 
-    /**
-     * @var string
-     */
-    private $command;
+    private string $command;
 
     public function __construct(int $id, array $informations, string $command)
     {

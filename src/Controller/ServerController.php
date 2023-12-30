@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[IsGranted(new Expression('is_granted("ROLE_ADMIN")'))]
 #[Route(path: '/server')]
@@ -21,7 +22,8 @@ class ServerController extends AbstractController
     public function __construct(
         private readonly ServerRepository $serverRepository,
         private readonly EntityManagerInterface $em,
-        private readonly Connection $connection
+        private readonly Connection $connection,
+        private readonly TranslatorInterface $translator
     ) {
     }
 
@@ -45,12 +47,12 @@ class ServerController extends AbstractController
                 return $this->render('server/new.html.twig', [
                     'server'     => $server,
                     'form'       => $form->createView(),
-                    'error_pass' => "Vous devez saisir un mot de passe."
+                    'error_pass' => $this->translator->trans('You must enter a password')
                 ]);
             }
             $this->em->persist($server);
             $this->em->flush();
-            $this->addFlash('success', 'Successful server creation!');
+            $this->addFlash('success', $this->translator->trans('Successful server creation!'));
 
             return $this->redirectToRoute('server_index');
         }
@@ -69,7 +71,7 @@ class ServerController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
-            $this->addFlash('success', 'Successful server update!');
+            $this->addFlash('success', $this->translator->trans('Successful server update!'));
 
             return $this->redirectToRoute('server_index');
         }
@@ -86,7 +88,7 @@ class ServerController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$server->getId(), $request->request->get('_token'))) {
             $this->em->remove($server);
             $this->em->flush();
-            $this->addFlash('success', 'Successful server suppression!');
+            $this->addFlash('success', $this->translator->trans('Successful server suppression!'));
         }
 
         return $this->redirectToRoute('server_index');
@@ -96,9 +98,9 @@ class ServerController extends AbstractController
     public function checkConnect(Server $server): Response
     {
         if (null !== $this->connection->getConnection($server)) {
-            $this->addFlash('success', 'Authentication successful!');
+            $this->addFlash('success', $this->translator->trans('Authentication successful!'));
         } else {
-            $this->addFlash('danger', 'Authentication failed!');
+            $this->addFlash('danger', $this->translator->trans('Authentication failed!'));
         }
 
         return $this->redirectToRoute('server_index');

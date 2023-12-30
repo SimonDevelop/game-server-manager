@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit a game server{% endblock %}
+{% block title %}{{ 'Edit a game server'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container mt-4">
-    <h1>Edit a game server</h1>
+    <h1>{{ 'Edit a game server'|trans }}</h1>
 
     {{ include('game/_form.html.twig') }}
 
-    <a class="btn btn-primary" href="{{ path('game_index') }}">Back to the list</a>
+    <a class="btn btn-primary" href="{{ path('game_index') }}">{{ 'Back to the list'|trans }}</a>
 </div>
 {% endblock %}

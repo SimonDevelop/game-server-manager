@@ -8,6 +8,7 @@ use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
@@ -16,7 +17,8 @@ class HomeController extends AbstractController
 {
     public function __construct(
         private readonly GameServerRepository $gameServerRepository,
-        private readonly LogRepository $logRepository
+        private readonly LogRepository $logRepository,
+        private readonly TranslatorInterface $translator
     ) {
     }
         
@@ -47,12 +49,17 @@ class HomeController extends AbstractController
         }
 
         $chart = $chartBuilder->createChart(Chart::TYPE_PIE);
+        $labels = [
+            $this->translator->trans('Servers On'),
+            $this->translator->trans('Servers Off'),
+            $this->translator->trans('Others')
+        ];
 
         $chart->setData([
-            'labels'   => ['Servers On', 'Servers Off', 'Autres'],
+            'labels'   => $labels,
             'datasets' => [
                 [
-                    'label'           => 'Game servers',
+                    'label'           => $this->translator->trans('Game servers'),
                     'backgroundColor' => ['rgb(46, 184, 46)', 'rgb(255, 64, 0)', 'rgb(255, 153, 51)'],
                     'borderColor'     => ['rgb(46, 184, 46)', 'rgb(255, 64, 0)', 'rgb(255, 153, 51)'],
                     'data'            => [$serversOn, $serversOff, $serverOther],

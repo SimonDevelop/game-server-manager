@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Logs {{ game.name }}{% endblock %}
+{% block title %}{{ 'Logs'|trans }} {{ game.name }}{% endblock %}
 
 {% block body %}
 <div class="container mt-4">
-    <h1>Logs {{ game.name }}</h1>
+    <h1>{{ 'Logs'|trans }} {{ game.name }}</h1>
 
     {% for message in app.flashes("success") %}
         <div class="alert alert-success">
@@ -24,12 +24,12 @@
         <input type="hidden" name="_token" value="{{ csrf_token('cmd' ~ game.id) }}">
         <div class="input-group mb-3">
             <input type="text" name="cmd" class="form-control" placeholder="Command line..." aria-label="Command line..." aria-describedby="button-addon">
-            <button class="btn btn-outline-success" type="submit" id="button-addon">Send</button>
+            <button class="btn btn-outline-success" type="submit" id="button-addon">{{ 'Send'|trans }}</button>
         </div>
     </form>
 
-    <a class="btn btn-primary" href="{{ path('game_index') }}">Back to the list</a>
-    <a class="btn btn-danger" href="{{ path('game_logs_clear', { 'id': game.id }) }}">Empty the logs</a>
+    <a class="btn btn-primary" href="{{ path('game_index') }}">{{ 'Back to the list'|trans }}</a>
+    <a class="btn btn-danger" href="{{ path('game_logs_clear', { 'id': game.id }) }}">{{ 'Empty the logs'|trans }}</a>
 </div>
 
 <script>

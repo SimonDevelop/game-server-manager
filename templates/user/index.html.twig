@@ -1,23 +1,23 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}List of users{% endblock %}
+{% block title %}{{ 'List of users'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container mt-4">
 
-    <h1>List of users</h1>
+    <h1>{{ 'List of users'|trans }}</h1>
 
-    <a class="btn btn-success" href="{{ path('user_new') }}">Add a new user</a>
+    <a class="btn btn-success" href="{{ path('user_new') }}">{{ 'Add a new user'|trans }}</a>
 
     <table class="table table-striped table-hover">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Username</th>
-                <th>Role</th>
-                <th>Date of creation</th>
-                <th>Servers</th>
-                <th>Actions</th>
+                <th>{{ 'Id'|trans }}</th>
+                <th>{{ 'Username'|trans }}</th>
+                <th>{{ 'Role'|trans }}</th>
+                <th>{{ 'Date of creation'|trans }}</th>
+                <th>{{ 'Servers'|trans }}</th>
+                <th>{{ 'Actions'|trans }}</th>
             </tr>
         </thead>
         <tbody>
@@ -27,9 +27,9 @@
                 <td>{{ user.username }}</td>
                 <td>
                     {% if user.roles[0] == "ROLE_ADMIN" %}
-                        Admin
+                        {{ 'Admin'|trans }}
                     {% else %}
-                        User
+                        {{ 'User'|trans }}
                     {% endif %}
                 </td>
                 <td>{{ user.createdAt|date('d/m/Y') }}</td>
@@ -38,15 +38,15 @@
                             data-bs-toggle="popover" data-bs-placement="top" data-bs-html="true"
                             data-bs-content="
                             {% for gameServer in user.gameServers %}{{ gameServer.name }}<br>{% endfor %}
-                            {% if user.gameServers is empty %}No server{% endif %}
+                            {% if user.gameServers is empty %}{{ 'No server'|trans }}{% endif %}
                             ">
-                        See game servers
+                        {{ 'See game servers'|trans }}
                     </button>
                 </td>
                 <td>
                     <div class="row justify-content-start">
                         <div class="col-auto">
-                            <a class="btn btn-warning" href="{{ path('user_edit', {'id': user.id}) }}">Edit</a>
+                            <a class="btn btn-warning" href="{{ path('user_edit', {'id': user.id}) }}">{{ 'Edit'|trans }}</a>
                         </div>
                         <div class="col-auto">
                             {{ include('user/_delete_form.html.twig') }}
@@ -56,12 +56,12 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="10">no records found</td>
+                <td colspan="10">{{ 'no records found'|trans }}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a class="btn btn-success" href="{{ path('user_new') }}">Add a new user</a>
+    <a class="btn btn-success" href="{{ path('user_new') }}">{{ 'Add a new user'|trans }}</a>
 </div>
 {% endblock %}

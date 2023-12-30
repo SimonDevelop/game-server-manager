@@ -11,12 +11,14 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SecurityController extends AbstractController
 {
     public function __construct(
         private readonly UserRepository $userRepository,
-        private readonly EntityManagerInterface $em
+        private readonly EntityManagerInterface $em,
+        private readonly TranslatorInterface $translator
     ) {
     }
 
@@ -43,7 +45,7 @@ class SecurityController extends AbstractController
     #[Route(path: '/logout', name: 'app_logout')]
     public function logout(): void
     {
-        throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
+        throw new \LogicException($this->translator->trans('This method can be blank - it will be intercepted by the logout key on your firewall.'));
     }
 
     #[Route(path: '/account', name: 'app_account')]
@@ -72,7 +74,7 @@ class SecurityController extends AbstractController
             $this->em->persist($user);
             $this->em->flush();
 
-            $this->addFlash('success', 'Your account has been updated!');
+            $this->addFlash('success', $this->translator->trans('Your account has been updated!'));
 
             return $this->redirectToRoute('app_account');
         }

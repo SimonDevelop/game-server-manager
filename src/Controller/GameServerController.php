@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use TiBeN\CrontabManager\CrontabAdapter;
 use TiBeN\CrontabManager\CrontabJob;
 use TiBeN\CrontabManager\CrontabRepository;
@@ -35,8 +36,9 @@ class GameServerController extends AbstractController
         private readonly MessageBusInterface $messageBus,
         private readonly Connection $connection,
         private readonly LoggerInterface $logger,
-        private readonly CronjobRepository $cronjobRepository
-    ){
+        private readonly CronjobRepository $cronjobRepository,
+        private readonly TranslatorInterface $translator
+    ) {
     }
 
     #[Route(path: '/', name: 'game_index', methods: ['GET'])]
@@ -54,7 +56,7 @@ class GameServerController extends AbstractController
         ]);
     }
 
-    #[Security("is_granted('ROLE_ADMIN')")]
+    #[IsGranted(new Expression('is_granted("ROLE_ADMIN")'))]
     #[Route(path: '/new', name: 'game_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
@@ -65,10 +67,10 @@ class GameServerController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->persist($game);
             $this->em->flush();
-            $this->addFlash('success', 'Successful creation of the game server!');
+            $this->addFlash('success', $this->translator->trans('Successful creation of the game server!'));
             $sshResponse = $this->gameOperations->createLogConfig($game);
             if (false === $sshResponse) {
-                $this->addFlash('danger', 'Log configuration failed!');
+                $this->addFlash('danger', $this->translator->trans('Log configuration failed!'));
             }
 
             return $this->redirectToRoute('game_index');
@@ -80,7 +82,7 @@ class GameServerController extends AbstractController
         ]);
     }
 
-    #[Security("is_granted('ROLE_ADMIN')")]
+    #[IsGranted(new Expression('is_granted("ROLE_ADMIN")'))]
     #[Route(path: '/{id}/edit', name: 'game_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, GameServer $game): Response
     {
@@ -89,10 +91,10 @@ class GameServerController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
-            $this->addFlash('success', 'Game server update successful!');
+            $this->addFlash('success', $this->translator->trans('Game server update successful!'));
             $sshResponse = $this->gameOperations->createLogConfig($game);
             if (false === $sshResponse) {
-                $this->addFlash('danger', 'Log configuration failed!');
+                $this->addFlash('danger', $this->translator->trans('Log configuration failed!'));
             }
 
             return $this->redirectToRoute('game_index');
@@ -104,20 +106,20 @@ class GameServerController extends AbstractController
         ]);
     }
 
-    #[Security("is_granted('ROLE_ADMIN')")]
+    #[IsGranted(new Expression('is_granted("ROLE_ADMIN")'))]
     #[Route(path: '/{id}', name: 'game_delete', methods: ['POST'])]
     public function delete(Request $request, GameServer $game): Response
     {
         if ($this->isCsrfTokenValid('delete'.$game->getId(), $request->request->get('_token'))) {
             $this->em->remove($game);
             $this->em->flush();
-            $this->addFlash('success', 'Successful suppression of the game server!');
+            $this->addFlash('success', $this->translator->trans('Successful suppression of the game server!'));
         }
 
         return $this->redirectToRoute('game_index');
     }
 
-    #[Security("is_granted('ROLE_ADMIN')")]
+    #[IsGranted(new Expression('is_granted("ROLE_ADMIN")'))]
     #[Route(path: '/{id}/cron', name: 'game_crons', methods: ['GET', 'POST'])]
     public function cron(Request $request, GameServer $game): Response
     {
@@ -158,9 +160,9 @@ class GameServerController extends AbstractController
                 $this->em->persist($cronjobEntity);
                 $this->em->flush();
 
-                $this->addFlash('success', 'Cronjob created with successful!');
+                $this->addFlash('success', $this->translator->trans('Cronjob created with successful!'));
             } else {
-                $this->addFlash('danger', 'Cronjob created failed!');
+                $this->addFlash('danger', $this->translator->trans('Cronjob created failed!'));
             }
 
             return $this->redirectToRoute('game_crons', [
@@ -175,7 +177,7 @@ class GameServerController extends AbstractController
         ]);
     }
 
-    #[Security("is_granted('ROLE_ADMIN')")]
+    #[IsGranted(new Expression('is_granted("ROLE_ADMIN")'))]
     #[Route(path: '/{id}/cron/delete', name: 'game_cron_delete', methods: ['POST'])]
     public function cronDelete(Request $request, GameServer $game): Response
     {
@@ -195,10 +197,10 @@ class GameServerController extends AbstractController
                     $this->em->flush();
                 }
 
-                $this->addFlash('success', 'The cronjob has been deleted!');
+                $this->addFlash('success', $this->translator->trans('The cronjob has been deleted!'));
             } catch (\Exception $exception) {
                 $this->logger->error($exception->getMessage());
-                $this->addFlash('danger', 'The cronjob could not be deleted!');
+                $this->addFlash('danger', $this->translator->trans('The cronjob could not be deleted!'));
             }
         }
 
@@ -225,7 +227,7 @@ class GameServerController extends AbstractController
                 'action' => 'Server started',
             ];
 
-            $this->addFlash('success', 'Game server being launched!');
+            $this->addFlash('success', $this->translator->trans('Game server being launched!'));
             $this->messageBus->dispatch(new SendCommandMessage($game->getId(), $informations, $command));
         }
 
@@ -248,7 +250,7 @@ class GameServerController extends AbstractController
                 'action' => 'Server stopped',
             ];
 
-            $this->addFlash('success', 'Game server being closed!');
+            $this->addFlash('success', $this->translator->trans('Game server being closed!'));
             $this->messageBus->dispatch(new SendCommandMessage($game->getId(), $informations, $command));
         }
 
@@ -271,7 +273,7 @@ class GameServerController extends AbstractController
                 'action' => 'Server Updating',
             ];
 
-            $this->addFlash('success', 'Game server is being updated!');
+            $this->addFlash('success', $this->translator->trans('Game server is being updated!'));
             $this->messageBus->dispatch(new SendCommandMessage($game->getId(), $informations, $command));
         }
 
@@ -293,7 +295,7 @@ class GameServerController extends AbstractController
                 'action' => 'Server killed',
             ];
 
-            $this->addFlash('success', 'Game server being forced to close!');
+            $this->addFlash('success', $this->translator->trans('Game server being forced to close!'));
             $this->messageBus->dispatch(new SendCommandMessage($game->getId(), $informations, $command));
         }
 
@@ -332,10 +334,10 @@ class GameServerController extends AbstractController
                 }
 
                 $this->connection->sendCommand($connection, $command);
-                $this->addFlash('success', 'Command sended!');
+                $this->addFlash('success', $this->translator->trans('Command sended!'));
             } catch (\Exception $exception) {
                 $this->logger->error($exception->getMessage());
-                $this->addFlash('danger', 'Command send failed!');
+                $this->addFlash('danger', $this->translator->trans('Command send failed!'));
             }
         }
 

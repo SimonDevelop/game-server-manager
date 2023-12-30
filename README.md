@@ -17,6 +17,7 @@ services:
       - IV_HASH=!CHangeMe!
       - DATABASE_URL=postgresql://user:pass@postgres:5432/gsm?serverVersion=16&charset=utf8
       - TZ=Europe/Paris
+      - APP_LANG=fr #default => en
     depends_on:
       - postgres
     ports:
@@ -36,12 +37,12 @@ The project has been designed to run under docker with frankenphp, if you want t
     "class": "Runtime\\FrankenPhpSymfony\\Runtime"
 }
 ```
-# Cron jobs
+# Cronjobs
 You have a cron job for game servers verification that runs every 5 minutes directly in the container.
 
-You can run up to 3 cron jobs commands to manage updates and restarts of your game servers from the interface.
+You can run up to 3 cronjobs commands to manage updates and restarts of your game servers from the interface.
 
-If you want to manage cron jobs outside the application, you can add them like this:
+If you want to manage cronjobs outside the application, you can add them like this:
 ```
 0 4 * * * docker exec <container_app> php bin/console cron:server:stop <id_game_server> >> /var/log/cron.log 2>&1
 1 4 * * * docker exec <container_app> php bin/console cron:server:update <id_game_server> --time=120 >> /var/log/cron.log 2>&1
@@ -51,3 +52,4 @@ If you want to manage cron jobs outside the application, you can add them like t
 # Importante notes
 - You need to install your game server before adding it to GSM.
 - If the gsm container is refreshed, the cronjobs present in the base will be added to the container's crontab.
+- Need to add your language? Don't hesitate to contribute with a pull request!
