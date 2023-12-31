@@ -30,7 +30,7 @@ class SendCommandHandler
         }
 
         $informations = $message->getInformations();
-        $user = $this->userRepository->find($informations['user']);
+        $user = $this->userRepository->findOneBy(['username' => $informations['user']]);
         if (null === $user) {
             throw new \Exception('Failed to send command');
         }
