@@ -1,4 +1,4 @@
-[![version](https://img.shields.io/badge/Version-1.0.1-brightgreen.svg)](https://github.com/SimonDevelop/game-server-manager/releases/tag/1.0.1)
+[![version](https://img.shields.io/badge/Version-1.0.2-brightgreen.svg)](https://github.com/SimonDevelop/game-server-manager/releases/tag/1.0.2)
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%208.2-8892BF.svg)](https://php.net/)
 [![Github Actions PHP](https://github.com/SimonDevelop/game-server-manager/workflows/PHP/badge.svg)](https://github.com/SimonDevelop/game-server-manager/actions)
 [![GitHub license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/SimonDevelop/game-server-manager/blob/master/LICENSE)
@@ -36,12 +36,7 @@ services:
       - POSTGRES_PASSWORD=pass
       - POSTGRES_DB=gsm
 ```
-The project has been designed to run under docker with frankenphp, if you want to use it out of docker, remember to remove the `runtime/frankenphp-symfony` package and this part of the composer.json :
-```
-"runtime": {
-    "class": "Runtime\\FrankenPhpSymfony\\Runtime"
-}
-```
+
 # Cronjobs
 You have a cron job for game servers verification that runs every 5 minutes directly in the container.
 
