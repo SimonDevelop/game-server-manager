@@ -50,6 +50,8 @@ Server: Server
 Path: Path
 Start command: Start command
 Stop command: Stop command
+Update command: Update command
+Custom command: Custom command
 Command: Command
 Periodicity: Periodicity
 Delete: Delete

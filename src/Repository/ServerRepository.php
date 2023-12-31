@@ -21,19 +21,4 @@ class ServerRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Server::class);
     }
-
-    public function findAllServers(): Query
-    {
-        return $this->createQueryBuilder('s')
-            ->getQuery();
-    }
-
-    public function findById(int $id): ?Server
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.id = :id')
-            ->setParameter('id', $id)
-            ->getQuery()
-            ->getOneOrNullResult();
-    }
 }

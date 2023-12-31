@@ -1,30 +1,10 @@
 version: '3.1'
 
 services:
-  gsm:
-    build:
-      context: ./
-      dockerfile: ./docker/Dockerfile.dev
-    environment:
-      - APP_ENV=dev
-      - APP_SECRET=69464a803874924422b85ea092c89ff8
-      - PASSWORD_HASH_KEY=flG6fEF1dFHJ9pql
-      - IV_HASH=qmd0gFzAR6mwGc2m
-      - DATABASE_URL=mysql://root:root@mysql:3306/gsm?serverVersion=5.7
-      - CADDY_DEBUG=debug
-    volumes:
-      - $PWD:/app
-    depends_on:
-      - mysql
-    ports:
-      - 80:8080
-
-  mysql:
+  postgres:
     restart: always
-    image: mysql:5.7
-    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+    image: postgres:16
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=gsm
-    volumes:
-      - $PWD/docker/mysql:/var/lib/mysql
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_DB=gsm
