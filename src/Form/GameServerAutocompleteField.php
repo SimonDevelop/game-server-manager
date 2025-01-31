@@ -6,12 +6,12 @@ use App\Entity\GameServer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\UX\Autocomplete\Form\AsEntityAutocompleteField;
-use Symfony\UX\Autocomplete\Form\ParentEntityAutocompleteType;
+use Symfony\UX\Autocomplete\Form\BaseEntityAutocompleteType;
 
 #[AsEntityAutocompleteField]
 class GameServerAutocompleteField extends AbstractType
 {
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'class'        => GameServer::class,
@@ -24,6 +24,6 @@ class GameServerAutocompleteField extends AbstractType
 
     public function getParent(): string
     {
-        return ParentEntityAutocompleteType::class;
+        return BaseEntityAutocompleteType::class;
     }
 }

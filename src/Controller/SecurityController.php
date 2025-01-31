@@ -62,8 +62,7 @@ class SecurityController extends AbstractController
 
             if (
                 false === empty($form->get('password')->getData())
-                &&
-                false === is_null($form->get('password')->getData())
+                || false === is_null($form->get('password')->getData())
             ) {
                 $user->setPassword(
                 $userPasswordHasher->hashPassword(

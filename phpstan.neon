@@ -5,3 +5,8 @@ parameters:
         - config/
         - public/
         - src/
+    treatPhpDocTypesAsCertain: false
+    ignoreErrors:
+        - message: "#^Property App\\\\Entity\\\\.*\\:\\:\\$id \\(int\\|null\\) is never assigned int so it can be removed from the property type\\.$#"
+        - identifier: missingType.generics
+        - identifier: missingType.iterableValue

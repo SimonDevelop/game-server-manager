@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use DateTimeImmutable;
+use DateTime;
 use DateTimeInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -19,7 +19,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 50, unique: true)]
@@ -51,7 +51,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->enabled = true;
-        $this->createdAt = new DateTimeImmutable();
+        $this->createdAt = new DateTime();
         $this->gameServers = new ArrayCollection();
         $this->logs = new ArrayCollection();
     }
