@@ -1,4 +1,4 @@
-[![version](https://img.shields.io/badge/Version-1.0.2-brightgreen.svg)](https://github.com/SimonDevelop/game-server-manager/releases/tag/1.0.2)
+[![version](https://img.shields.io/badge/Version-1.1.0-brightgreen.svg)](https://github.com/SimonDevelop/game-server-manager/releases/tag/1.1.0)
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%208.3-8892BF.svg)](https://php.net/)
 [![Github Actions PHP](https://github.com/SimonDevelop/game-server-manager/workflows/PHP/badge.svg)](https://github.com/SimonDevelop/game-server-manager/actions)
 [![GitHub license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/SimonDevelop/game-server-manager/blob/master/LICENSE)
