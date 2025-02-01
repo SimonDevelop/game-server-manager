@@ -1,0 +1,39 @@
+name: Upload the latest release
+
+on:
+  push:
+    tags: ["*"]
+
+jobs:
+  create:
+    name: "Creates the newest release by version"
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v2.3.4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Docker Build
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Get version from tag
+        id: get_version
+        run: echo "::set-output name=version::${GITHUB_REF#refs/tags/}"
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          context: docker/Dockerfile
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          tags: |
+            simondockerise/gsm:latest
+            simondockerise/gsm:${{ steps.get_version.outputs.version }}
