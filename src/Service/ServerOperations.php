@@ -4,7 +4,7 @@ namespace App\Service;
 
 use App\Entity\Server;
 use Doctrine\ORM\EntityManagerInterface;
-use DateTimeImmutable;
+use DateTime;
 
 class ServerOperations
 {
@@ -14,7 +14,7 @@ class ServerOperations
 
     public function updateLastConnection(Server $server): void
     {
-        $server->setLastConnection(new DateTimeImmutable());
+        $server->setLastConnection(new DateTime());
         $this->em->persist($server);
         $this->em->flush();
     }

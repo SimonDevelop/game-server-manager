@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ServerRepository;
 use Doctrine\ORM\Mapping as ORM;
-use DateTimeImmutable;
+use DateTime;
 use DateTimeInterface;
 
 #[ORM\Entity(repositoryClass: ServerRepository::class)]
@@ -41,7 +41,7 @@ class Server
 
     public function __construct()
     {
-        $this->createdAt = new DateTimeImmutable();
+        $this->createdAt = new DateTime();
     }
 
     public function getId(): ?int

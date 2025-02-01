@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\LogRepository;
-use DateTimeImmutable;
+use DateTime;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -35,7 +35,7 @@ class Log
     public function __construct()
     {
         $this->state      = true;
-        $this->createdAt  = new DateTimeImmutable();
+        $this->createdAt  = new DateTime();
         $this->gameServer = null;
     }
 
