@@ -5,7 +5,7 @@ namespace App\Service;
 use App\Entity\GameServer;
 use App\Entity\Log;
 use App\Entity\User;
-use DateTimeImmutable;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 
 class LogService
@@ -23,7 +23,7 @@ class LogService
         }
         $log->setGameServer($gameServer);
         $log->setState($state);
-        $log->setCreatedAt(new DateTimeImmutable());
+        $log->setCreatedAt(new DateTime());
 
         $this->em->persist($log);
         $this->em->flush();

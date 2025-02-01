@@ -35,7 +35,7 @@ class Connection
             return true;
         } catch (\Throwable $th) {
             return false;
-        }   
+        }
     }
 
     public function sendCommandWithResponse(SSH2 $connection, string $command): string|bool
@@ -49,6 +49,6 @@ class Connection
             return false;
         } catch (\Throwable $th) {
             return false;
-        }   
+        }
     }
 }

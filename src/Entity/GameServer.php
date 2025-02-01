@@ -6,7 +6,7 @@ use App\Repository\GameServerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use DateTimeImmutable;
+use DateTime;
 use DateTimeInterface;
 
 #[ORM\Entity(repositoryClass: GameServerRepository::class)]
@@ -69,7 +69,7 @@ class GameServer
     public function __construct()
     {
         $this->stateType = 0;
-        $this->createdAt = new DateTimeImmutable();
+        $this->createdAt = new DateTime();
         $this->users = new ArrayCollection();
         $this->logs = new ArrayCollection();
         $this->cronjobs = new ArrayCollection();
