@@ -32,7 +32,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          context: docker/Dockerfile
+          file: ./docker/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           tags: |
             simondockerise/gsm:latest
