@@ -15,7 +15,7 @@ class Server
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]

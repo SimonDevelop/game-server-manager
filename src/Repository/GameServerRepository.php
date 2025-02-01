@@ -44,4 +44,15 @@ class GameServerRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @return GameServer[]
+     */
+    public function findAllWithOrder(): array
+    {
+        return $this->createQueryBuilder('g')
+            ->addOrderBy('g.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -12,7 +12,7 @@ class Log
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
@@ -23,7 +23,7 @@ class Log
     private ?User $user = null;
 
     #[ORM\Column(type: 'boolean')]
-    private ?bool $state;
+    private bool $state;
 
     #[ORM\Column(type: 'datetime')]
     private \DateTimeInterface $createdAt;
@@ -68,7 +68,7 @@ class Log
         return $this;
     }
 
-    public function isState(): ?bool
+    public function isState(): bool
     {
         return $this->state;
     }

@@ -18,6 +18,8 @@ doctrine:
         dql:
             string_functions:
                 JSON_TEXT: App\Doctrine\Functions\JSONText
+        controller_resolver:
+            auto_mapping: false
 
 when@test:
     doctrine:

@@ -48,7 +48,7 @@ class GameServerController extends AbstractController
         if (in_array('ROLE_USER', $user->getRoles())) {
             $gameServers = $this->gameServerRepository->findByUsername($user->getUserIdentifier());
         } else {
-            $gameServers = $this->gameServerRepository->findAll();
+            $gameServers = $this->gameServerRepository->findAllWithOrder();
         }
 
         return $this->render('game/index.html.twig', [
