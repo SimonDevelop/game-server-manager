@@ -51,14 +51,16 @@ RUN (crontab -l; echo "PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:
 RUN (crontab -l; echo "*/5 * * * * php /app/bin/console cron:server:check >> /var/log/cron.log 2>&1") | crontab
 RUN touch /var/log/cron.log
 
+# Clean folders
+#RUN rm -rf /app/vendor && \
+#    rm -rf /app/node_modules && \
+#    rm -rf /app/.git && \
+#    rm -rf /app/.env.local && \
+#    chown -R 1000:1000 /app && \
+#    chmod -R 777 /app/var
+
 # Run commands for image app
-RUN rm -rf /app/vendor && \
-    rm -rf /app/node_modules && \
-    rm -rf /app/.git && \
-    rm -rf /app/.env.local && \
-    chown -R 1000:1000 /app && \
-    chmod -R 777 /app/var && \
-    cd /app && \
+RUN cd /app && \
     composer install --ignore-platform-reqs && \
     yarn && yarn encore prod
     
