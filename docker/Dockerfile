@@ -20,13 +20,11 @@ RUN apt-get update && \
 # Install php extensions
 RUN install-php-extensions \
     pgsql \
-    pdo \
     pdo_pgsql \
     gd \
     opcache \
     intl \
-    zip \
-    dom
+    zip
 
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
