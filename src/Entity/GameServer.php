@@ -44,6 +44,9 @@ class GameServer
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $path = null;
 
+    #[ORM\Column(type: 'boolean', options: ["default" => false])]
+    private bool $sudoer;
+
     #[ORM\Column(type: 'integer')]
     private ?int $stateType = null;
 
@@ -68,6 +71,7 @@ class GameServer
 
     public function __construct()
     {
+        $this->sudoer = false;
         $this->stateType = 0;
         $this->createdAt = new DateTime();
         $this->users = new ArrayCollection();
@@ -148,6 +152,18 @@ class GameServer
     public function setPath(string $path): self
     {
         $this->path = $path;
+
+        return $this;
+    }
+
+    public function getSudoer(): bool
+    {
+        return $this->sudoer;
+    }
+
+    public function setSudoer(bool $sudoer): self
+    {
+        $this->sudoer = $sudoer;
 
         return $this;
     }

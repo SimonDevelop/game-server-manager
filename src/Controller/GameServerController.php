@@ -222,7 +222,10 @@ class GameServerController extends AbstractController
             $path     = $game->getPath();
             $pathLogs = $this->gameOperations->getGameServerLogConf($game);
             $cmd      = $game->getCommandStart();
-            $command  = "cd $path && touch server.log && screen -c $pathLogs -dmSL $name $cmd";
+            if ($game->getSudoer()) {
+                $cmd = 'sudo '.$cmd;
+            }
+            $command = "cd $path && touch server.log && screen -c $pathLogs -dmSL $name $cmd";
             $informations = [
                 'user'   => $this->getUser()->getUserIdentifier(),
                 'action' => 'Server started',
