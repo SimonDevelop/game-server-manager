@@ -15,7 +15,10 @@ class Connection
     {
         try {
             $connection = new SSH2($server->getIp(), (int) $server->getPort());
-            $connection->login($server->getLogin(), $server->getPassword());
+            $result = $connection->login($server->getLogin(), $server->getPassword());
+            if (true !== $result) {
+                return null;
+            }
             $this->serverOperations->updateLastConnection($server);
 
             return $connection;
