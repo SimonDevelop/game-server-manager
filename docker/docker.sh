@@ -1,4 +1,5 @@
 #!/bin/bash
+
 sleep 5
 
 # Set TimeZone for docker image and php
@@ -8,13 +9,14 @@ echo "date.timezone = '$TZ'" > /usr/local/etc/php/php.ini
 # Clear cache and update database
 php bin/console c:c
 php bin/console d:s:u --force --no-interaction
+php bin/console secrets:generate-keys --env=prod
 
 # Start cron
 env >> /etc/environment
 cron -f -l 2 &
 
 # Start frankenphp
-frankenphp run --config /etc/caddy/Caddyfile &
+frankenphp run --config /app/docker/Caddyfile &
 
 # Start supervisord
 /usr/bin/supervisord &
