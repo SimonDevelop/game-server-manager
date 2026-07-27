@@ -1,4 +1,4 @@
-FROM dunglas/frankenphp:latest-php8.3
+FROM dunglas/frankenphp:1.12.6-php8.5
 
 # Environements
 ENV FRANKENPHP_CONFIG="worker ./public/index.php"
@@ -24,6 +24,7 @@ RUN install-php-extensions \
     gd \
     opcache \
     intl \
+    xml \
     zip
 
 # Install composer
@@ -32,7 +33,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin -
 # Install nodejs and yarn
 RUN mkdir -p /etc/apt/keyrings
 RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
-RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
+RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_24.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
 RUN apt-get update && apt-get install nodejs -y && npm i -g yarn
 
 # Copy files project
@@ -50,17 +51,19 @@ RUN (crontab -l; echo "*/5 * * * * php /app/bin/console cron:server:check >> /va
 RUN touch /var/log/cron.log
 
 # Clean folders
-#RUN rm -rf /app/vendor && \
-#    rm -rf /app/node_modules && \
-#    rm -rf /app/.git && \
-#    rm -rf /app/.env.local && \
-#    chown -R 1000:1000 /app && \
-#    chmod -R 777 /app/var
+RUN rm -rf /app/vendor && \
+    rm -rf /app/config/secrets/* && \
+    rm -rf /app/node_modules && \
+    rm -rf /app/.git && \
+    rm -rf /app/.env.local && \
+    chown -R 1000:1000 /app && \
+    chmod -R 777 /app/var
 
 # Run commands for image app
 RUN cd /app && \
-    composer install --ignore-platform-reqs && \
-    yarn && yarn encore prod
+    COMPOSER_ALLOW_SUPERUSER=1 composer install --ignore-platform-reqs && \
+    yarn && \
+    yarn encore prod
     
 WORKDIR /app
 

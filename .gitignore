@@ -3,7 +3,7 @@
 /.env.local
 /.env.local.php
 /.env.*.local
-/config/secrets/prod/prod.decrypt.private.php
+/config/secrets/*
 /public/bundles/
 /var/
 /vendor/
@@ -26,8 +26,9 @@ npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 
-###> docker-compose-dev ###
-docker-compose.yaml
-docker-compose.yml
+###> docker-compose-dev & database ###
+compose.yaml
 docker/mysql/
-###< docker-compose-dev ###
+###< docker-compose-dev & database ###
+
+APP_LANG=en
