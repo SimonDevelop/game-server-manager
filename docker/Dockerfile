@@ -1,4 +1,4 @@
-FROM dunglas/frankenphp:1.12.6-php8.5
+FROM dunglas/frankenphp:1.13.2-php8.5
 
 # Environements
 ENV FRANKENPHP_CONFIG="worker ./public/index.php"
